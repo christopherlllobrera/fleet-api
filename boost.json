@@ -1,0 +1,15 @@
+{
+    "agents": [
+        "antigravity"
+    ],
+    "cloud": false,
+    "packages": [
+        "filament/filament"
+    ],
+    "skills": [
+        "laravel-best-practices",
+        "livewire-development",
+        "pest-testing",
+        "tailwindcss-development"
+    ]
+}
