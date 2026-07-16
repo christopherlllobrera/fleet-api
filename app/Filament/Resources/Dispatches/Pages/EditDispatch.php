@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Clusters\FleetManagement\Resources\Dispatches\Pages;
+namespace App\Filament\Resources\Dispatches\Pages;
 
-use App\Filament\Clusters\FleetManagement\Resources\Dispatches\DispatchResource;
+use App\Filament\Resources\Dispatches\DispatchResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 

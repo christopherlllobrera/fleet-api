@@ -14,19 +14,25 @@ return new class extends Migration
         Schema::create('dispatches', function (Blueprint $table) {
             $table->id();
             $table->string('ticket_no');
+            $table->string('reqeust_item');
+            $table->integer('passenger_count')->nullable();
             $table->foreignId('vehicle_id')->constrained()->cascadeOnDelete();
             $table->foreignId('driver_id')->constrained()->cascadeOnDelete();
             $table->foreignId('requesting_office_id')->constrained()->cascadeOnDelete();
-            $table->string('from_location');
-            $table->string('to_location');
-            $table->string('purpose');
-            $table->string('priority_level');
-            $table->dateTime('departure_time');
-            $table->dateTime('en_route_time');
-            $table->dateTime('complete_time');
-            $table->dateTime('cancel_time');
-            $table->string('reason');
-            $table->string('status');
+            $table->text('from_location')->nullable();
+            $table->decimal('from_lat', 10, 7)->nullable();
+            $table->decimal('from_lng', 10, 7)->nullable();
+            $table->text('to_location')->nullable();
+            $table->decimal('to_lat', 10, 7)->nullable();
+            $table->decimal('to_lng', 10, 7)->nullable();
+            $table->string('purpose')->nullable() ;
+            $table->string('priority_level')->nullable() ;
+            $table->dateTime('departure_time')->nullable();
+            $table->dateTime('en_route_time')->nullable();
+            $table->dateTime('complete_time')->nullable();
+            $table->dateTime('cancel_time')->nullable();
+            $table->string('reason')->nullable();
+            $table->string('status')->nullable();
             $table->timestamps();
         });
     }

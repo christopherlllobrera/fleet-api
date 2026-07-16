@@ -16,7 +16,7 @@ class DriversTable
     {
         return $table
             ->columns([
-                TextColumn::make('employee.employee_no')
+                TextColumn::make('employee.full_name')
                     ->label('Employee Name')
                     ->searchable()
                     ->sortable(),

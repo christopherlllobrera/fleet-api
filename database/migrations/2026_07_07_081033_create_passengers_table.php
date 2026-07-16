@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('passengers', function (Blueprint $table) {
             $table->id();
-            $table->string('employee_id');
             $table->foreignId('dispatch_id')->constrained()->cascadeOnDelete();
-            $table->string('name');
-            $table->string('contact_no');
-            $table->string('pick_up_location');
+            $table->string('name')->nullable();
+            $table->string('contact_no')->nullable();
+            $table->json('pick_up_location')->nullable();
+            $table->decimal('pick_up_lat', 10, 7)->nullable();
+            $table->decimal('pick_up_lng', 10, 7)->nullable();
             $table->timestamps();
         });
     }

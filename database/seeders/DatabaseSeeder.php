@@ -29,6 +29,8 @@ class DatabaseSeeder extends Seeder
             EmployeeSeeder::class,
             TollRoadSeeder::class,
             TollPointSeeder::class,
+            DriverSeeder::class,
+            RequestingOfficeSeeder::class,
         ]);
     }
 }

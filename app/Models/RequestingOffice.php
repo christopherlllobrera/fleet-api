@@ -9,5 +9,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class RequestingOffice extends Model
 {
-    //
+    
 }

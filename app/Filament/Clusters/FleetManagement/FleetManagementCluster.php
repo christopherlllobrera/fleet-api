@@ -9,9 +9,9 @@ use UnitEnum;
 
 class FleetManagementCluster extends Cluster
 {
-    // protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSquares2x2;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice;
 
     protected static string|UnitEnum|null $navigationGroup = 'Fleet';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 2;
 }
