@@ -56,6 +56,7 @@ return [
         'tile_url_dark'    => env('LEAFLET_TILE_URL_DARK', 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'),
         'tile_attribution' => env('LEAFLET_TILE_ATTRIBUTION', '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attributions">CARTO</a>'),
         'nominatim_url'    => env('NOMINATIM_URL', 'https://nominatim.openstreetmap.org'),
+        'country_codes'    => env('NOMINATIM_COUNTRY_CODES', 'ph'),
     ],
 
     /*

@@ -9,9 +9,9 @@ use UnitEnum;
 
 class TollCluster extends Cluster
 {
-    // protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSquares2x2;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArrowsRightLeft;
 
     protected static string|UnitEnum|null $navigationGroup = 'Fleet';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 4;
 }

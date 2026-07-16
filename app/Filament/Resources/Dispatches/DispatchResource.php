@@ -1,29 +1,32 @@
 <?php
 
-namespace App\Filament\Clusters\FleetManagement\Resources\Dispatches;
+namespace App\Filament\Resources\Dispatches;
 
-use App\Filament\Clusters\FleetManagement\FleetManagementCluster;
-use App\Filament\Clusters\FleetManagement\Resources\Dispatches\Pages\CreateDispatch;
-use App\Filament\Clusters\FleetManagement\Resources\Dispatches\Pages\EditDispatch;
-use App\Filament\Clusters\FleetManagement\Resources\Dispatches\Pages\ListDispatches;
-use App\Filament\Clusters\FleetManagement\Resources\Dispatches\Schemas\DispatchForm;
-use App\Filament\Clusters\FleetManagement\Resources\Dispatches\Tables\DispatchesTable;
-use App\Models\Dispatch;
+use App\Filament\Resources\Dispatches\Pages\CreateDispatch;
+use App\Filament\Resources\Dispatches\Pages\EditDispatch;
+use App\Filament\Resources\Dispatches\Pages\ListDispatches;
+use App\Filament\Resources\Dispatches\Schemas\DispatchForm;
+use App\Filament\Resources\Dispatches\Tables\DispatchesTable;
 use BackedEnum;
+use App\Models\Dispatch;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class DispatchResource extends Resource
 {
     protected static ?string $model = Dispatch::class;
 
-    // protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string | UnitEnum | null $navigationGroup = 'Fleet';
 
-    protected static ?string $cluster = FleetManagementCluster::class;
-
+    protected static ?string $navigationLabel = 'Dispatchings';
     protected static ?int $navigationSort = 1;
+    protected static ?string $breadcrumb = 'Dispatchings';
+    // protected static ?string $slug = 'Dispatchings';
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTruck;
 
     public static function form(Schema $schema): Schema
     {

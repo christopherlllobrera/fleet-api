@@ -9,7 +9,7 @@ use UnitEnum;
 
 class FleetDataCluster extends Cluster
 {
-    // protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSquares2x2;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArchiveBox;
 
     protected static string|UnitEnum|null $navigationGroup = 'Fleet';
 

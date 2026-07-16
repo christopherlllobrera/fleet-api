@@ -19,7 +19,7 @@ class VehicleResource extends Resource
 {
     protected static ?string $model = Vehicle::class;
 
-    // protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTruck;
 
     protected static ?string $cluster = FleetManagementCluster::class;
 
