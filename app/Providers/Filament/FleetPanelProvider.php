@@ -76,7 +76,7 @@ class FleetPanelProvider extends PanelProvider
             ])
             ->navigationGroups([
                 'Fleet',
-                'HR',
+                'Workforce',
                 'Data',
                 'Settings',
             ])

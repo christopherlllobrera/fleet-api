@@ -26,6 +26,7 @@ use Filament\Schemas\Components\Utilities\Set;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Facades\Blade;
 use Fahiem\FilamentPinpoint\PinpointEntry;
+use Filament\Forms\Components\Hidden;
 
 
 class DispatchForm
@@ -65,12 +66,17 @@ class DispatchForm
                                         ->draggable()
                                         ->searchable()
                                         ->defaultLocation(14.591645224717015, 121.06905452338266),
-                                    TextInput::make('from_location')->label('From')->readOnly(),
-                                    TextInput::make('to_location')->label('To')->readOnly(),
-                                    TextInput::make('from_lat')->label('From Latitude')->readOnly(),
-                                    TextInput::make('to_lat')->label('To Latitude')->readOnly(),
-                                    TextInput::make('from_lng')->label('From Longitude')->readOnly(),
-                                    TextInput::make('to_lng')->label('To Longitude')->readOnly(),
+                                    Hidden::make('from_location')->label('From'),
+                                    Hidden::make('to_location')->label('To'),
+                                    Hidden::make('from_lat')->label('From Latitude'),
+                                    Hidden::make('to_lat')->label('To Latitude'),
+                                    Hidden::make('from_lng')->label('From Longitude'),
+                                    Hidden::make('to_lng')->label('To Longitude'),
+                                    Textarea::make('purpose')
+                                        ->label('Purpose')
+                                        ->rows(2)
+                                        ->placeholder('Enter the purpose of the trip (optional)')
+                                        ->columnSpanFull(),   
                                     
                                     
 
@@ -166,11 +172,7 @@ class DispatchForm
                                             ->options(
                                                 RequestingOffice::all()->pluck('office_name', 'id')->toArray()
                                             ),
-                                        Textarea::make('purpose')
-                                            ->label('Purpose')
-                                            ->rows(5)
-                                            ->placeholder('Enter the purpose of the trip (optional)')
-                                            ->columnSpanFull(),                              
+                                                                   
                                 ])
                                 ->columns(1)
                                 ->columnSpan(1),
@@ -324,9 +326,9 @@ class DispatchForm
                                                     'lg' => 3
                                                 ])
                                                 ->schema([
-                                                    TextInput::make('pick_up_location')->label('Location')->readonly(),
-                                                    TextInput::make('pick_up_lat')->label('Latitude')->readonly(),
-                                                    TextInput::make('pick_up_lng')->label('Longitude')->readonly(),
+                                                    Hidden::make('pick_up_location')->label('Location'),
+                                                    Hidden::make('pick_up_lat')->label('Latitude'),
+                                                    Hidden::make('pick_up_lng')->label('Longitude'),
                                                 ])
                                             
                                         ])

@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Filament\Clusters\FleetManagement\Resources\Incidents\Tables;
+namespace App\Filament\Resources\Incidents\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\SelectColumn;
 
 class IncidentsTable
 {
@@ -14,34 +15,32 @@ class IncidentsTable
     {
         return $table
             ->columns([
-                TextColumn::make('company_id')
-                    ->searchable(),
+                TextColumn::make('company.name')
+                    ->label('Company')->searchable(),
                 TextColumn::make('reference_no')
-                    ->searchable(),
-                TextColumn::make('dispatch_id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('vehicle_id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('reported_by')
-                    ->searchable(),
+                    ->label('Reference No.')->searchable(),
+                TextColumn::make('dispatch.ticket_no')
+                    ->label('Ticket No.')->sortable(),
+                TextColumn::make('vehicle.plate_no')
+                    ->label('Plate No.')->sortable(),
                 TextColumn::make('reported_at')
-                    ->searchable(),
-                TextColumn::make('incident_location')
-                    ->searchable(),
-                TextColumn::make('incident_description')
-                    ->searchable(),
+                    ->label('Reported At')
+                    ->searchable()
+                    ->date(),
                 TextColumn::make('incident_severity')
-                    ->searchable(),
+                    ->label('Severity')->searchable(),
                 TextColumn::make('type')
-                    ->searchable(),
-                TextColumn::make('location')
-                    ->searchable(),
+                    ->label('Type')->searchable(),
                 TextColumn::make('priority')
-                    ->searchable(),
-                TextColumn::make('status')
-                    ->searchable(),
+                    ->label('Priority')->searchable(),
+                SelectColumn::make('status')
+                    ->options([
+                        'Open' => 'Open',
+                        'In Progress' => 'In Progress',
+                        'Resolved' => 'Resolved',
+                        'Closed' => 'Closed',
+                        'Cancelled' => 'Cancelled',
+                    ]),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

@@ -2,11 +2,15 @@
 
 namespace App\Filament\Resources\Dispatches\Tables;
 
+use App\Filament\Resources\Dispatches\Actions\FuelAction;
+use App\Filament\Resources\Dispatches\Actions\IncidentAction;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Support\Enums\Size;
 use Filament\Tables\Columns\SelectColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class DispatchesTable
@@ -20,12 +24,12 @@ class DispatchesTable
                     ->label('Ticket No.'),
                 SelectColumn::make('status')
                     ->options([
-                    'Pending' => 'Pending',
-                    'Assigned' => 'Assigned',
-                    'Unassigned' => 'Unassigned',
-                    'Unserved' => 'Unserved',
-                    'Cancelled' => 'Cancelled',
-                    'Completed' => 'Completed',
+                        'Pending' => 'Pending',
+                        'Assigned' => 'Assigned',
+                        'Unassigned' => 'Unassigned',
+                        'Unserved' => 'Unserved',
+                        'Cancelled' => 'Cancelled',
+                        'Completed' => 'Completed',
                     ])
                     ->searchable(),
                 TextColumn::make('vehicle.plate_no')
@@ -49,7 +53,7 @@ class DispatchesTable
                     ->label('To')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->icon('heroicon-m-map-pin')
-                    ->limit(30),    
+                    ->limit(30),
                 TextColumn::make('priority_level')
                     ->label('Priority Level')
                     ->badge()
@@ -79,7 +83,18 @@ class DispatchesTable
                 //
             ])
             ->recordActions([
-                EditAction::make(),
+                ActionGroup::make([
+                    EditAction::make(),
+                    FuelAction::make(),
+                    IncidentAction::make()
+
+                ])
+                    // ->label('More actions')
+                    // ->icon('heroicon-m-ellipsis-vertical')
+                    // ->size(Size::Small)
+                    // ->color('primary')
+                    // ->button(),
+
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

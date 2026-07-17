@@ -11,9 +11,11 @@ class HRManagementCluster extends Cluster
 {
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArchiveBoxArrowDown;
 
-    protected static string|UnitEnum|null $navigationGroup = 'HR';
+    protected static string|UnitEnum|null $navigationGroup = 'Workforce';
 
-    protected static ?string $navigationLabel = 'HR Management';
+    protected static ?string $navigationLabel = 'Workforce Structure';
 
-    protected static ?string $clusterBreadcrumb = 'HR Management';
+    protected static ?string $clusterBreadcrumb = 'Workforce Structure';
+
+    protected static ?string $slug = 'workforce-structure';
 }
