@@ -7,7 +7,7 @@ use App\Models\Vehicles;
 use App\Models\Employee;
 use App\Models\WorkOrder;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
-use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Support\LogOptions;
 
 class PreventiveWorkOrder extends Model
 {
@@ -99,14 +99,14 @@ class PreventiveWorkOrder extends Model
         return $this->belongsTo(Vehicle::class);
     }
 
-    public function supervisor()
+     public function employee()
     {
-        return $this->belongsTo(Employee::class, 'supervisor_id');
+        return $this->belongsTo(Employee::class);
     }
-
-    public function leadman()
+    
+    public function getFullNameAttribute()
     {
-        return $this->belongsTo(Employee::class, 'leadman_id');
+        return $this->employee ? trim($this->employee->first_name . ' ' . $this->employee->last_name) : 'No Name';
     }
 
     public function workOrder()

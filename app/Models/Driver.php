@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
-#[Fillable(['employee_id', 'license_no', 'license_expiry', 'status', 'license_class', 'medical_expiry', 'issuing_country', 'is_active',
+#[Fillable(['employee_id', 'license_no', 'license_expiry', 'status', 'license_class', 'medical_expiry', 'country_id', 'is_active',
 ])]
 class Driver extends Model
 {

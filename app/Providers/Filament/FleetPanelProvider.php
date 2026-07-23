@@ -51,7 +51,7 @@ class FleetPanelProvider extends PanelProvider
             ->emailVerificationRouteSlug('verify')
             ->topbar(false)
             ->spa()
-            // ->favicon(asset('favicon-official-1.png'))
+            ->favicon(secure_asset('favicon-official-1.png'))
             ->brandName('IAM')
             ->brandLogoHeight('3rem')
             ->darkModeBrandLogo(fn () => view('filament.customization.logodarkmode'))

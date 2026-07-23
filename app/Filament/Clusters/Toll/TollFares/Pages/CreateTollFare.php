@@ -8,4 +8,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateTollFare extends CreateRecord
 {
     protected static string $resource = TollFareResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

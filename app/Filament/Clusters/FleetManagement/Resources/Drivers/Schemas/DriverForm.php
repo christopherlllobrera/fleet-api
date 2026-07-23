@@ -20,8 +20,8 @@ class DriverForm
                     ->schema([
                         Select::make('employee_id')
                             ->relationship('employee', 'employee_no')
-                            // ->getOptionLabelFromRecordUsing(fn (Employee $record) => $record->full_name)
-                            // ->searchable(['first_name', 'middle_name', 'last_name'])
+                            ->getOptionLabelFromRecordUsing(fn (Employee $record) => $record->full_name)
+                            ->searchable(['first_name', 'middle_name', 'last_name'])
                             ->preload()
                             ->required(),
                         Select::make('status')
