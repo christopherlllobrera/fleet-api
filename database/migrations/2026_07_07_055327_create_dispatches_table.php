@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('dispatches', function (Blueprint $table) {
             $table->id();
             $table->string('ticket_no');
-            $table->string('reqeust_item');
+            $table->string('request_item');
             $table->integer('passenger_count')->nullable();
             $table->foreignId('vehicle_id')->constrained()->cascadeOnDelete();
             $table->foreignId('driver_id')->constrained()->cascadeOnDelete();
@@ -25,8 +25,8 @@ return new class extends Migration
             $table->text('to_location')->nullable();
             $table->decimal('to_lat', 10, 7)->nullable();
             $table->decimal('to_lng', 10, 7)->nullable();
-            $table->string('purpose')->nullable() ;
-            $table->string('priority_level')->nullable() ;
+            $table->string('purpose')->nullable();
+            $table->string('priority_level')->nullable();
             $table->dateTime('departure_time')->nullable();
             $table->dateTime('en_route_time')->nullable();
             $table->dateTime('complete_time')->nullable();

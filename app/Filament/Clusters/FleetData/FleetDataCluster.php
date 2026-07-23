@@ -13,5 +13,5 @@ class FleetDataCluster extends Cluster
 
     protected static string|UnitEnum|null $navigationGroup = 'Fleet';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 4;
 }

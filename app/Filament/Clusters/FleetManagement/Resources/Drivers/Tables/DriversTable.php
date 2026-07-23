@@ -7,8 +7,6 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use App\Models\Employee;
-
 
 class DriversTable
 {
@@ -17,14 +15,15 @@ class DriversTable
         return $table
             ->columns([
                 TextColumn::make('employee.full_name')
-                    ->label('Employee Name')
+                    ->label('Name')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('employee.employee_no')
-                    ->label('Employee No')
+                    ->label('Employee No.')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('license_no')
+                    ->label('License No.')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('license_class')
@@ -39,9 +38,6 @@ class DriversTable
                     ->sortable(),
                 TextColumn::make('status')
                     ->searchable()
-                    ->sortable(),
-                TextColumn::make('is_active')
-                    
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()

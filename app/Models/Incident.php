@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 
 #[Fillable([
-    'company_no', 'reference_no',
+    'company_id', 'reference_no',
     'dispatch_id', 'incident_severity', 'type',
     'vehicle_id', 'reported_by', 'reported_at',
     'location', 'priority', 'status',

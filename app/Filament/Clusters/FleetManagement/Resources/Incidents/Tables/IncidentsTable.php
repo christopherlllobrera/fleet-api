@@ -14,7 +14,7 @@ class IncidentsTable
     {
         return $table
             ->columns([
-                TextColumn::make('company_no')
+                TextColumn::make('company_id')
                     ->searchable(),
                 TextColumn::make('reference_no')
                     ->searchable(),
