@@ -15,14 +15,15 @@ class DriversTable
         return $table
             ->columns([
                 TextColumn::make('employee.full_name')
-                    ->label('Employee Name')
+                    ->label('Name')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('employee.employee_no')
-                    ->label('Employee No')
+                    ->label('Employee No.')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('license_no')
+                    ->label('License No.')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('license_class')

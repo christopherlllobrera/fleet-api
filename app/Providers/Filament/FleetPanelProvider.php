@@ -11,6 +11,7 @@ use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages\Dashboard;
+use App\Filament\Pages\FleetDashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -25,6 +26,12 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
 use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
+
+use App\Filament\Widgets\TripOverview;
+use App\Filament\Widgets\DispatchChart;
+use App\Filament\Widgets\VehicleOverview;
+use App\Filament\Widgets\PassengerChart;
+use App\Filament\Widgets\LatestIncident;
 
 class FleetPanelProvider extends PanelProvider
 {
@@ -72,7 +79,8 @@ class FleetPanelProvider extends PanelProvider
             ->discoverClusters(in: app_path('Filament/Clusters'), for: 'App\\Filament\\Clusters')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
-                Dashboard::class,
+                // Dashboard::class,
+                FleetDashboard::class,
             ])
             ->navigationGroups([
                 'Fleet',
@@ -80,10 +88,13 @@ class FleetPanelProvider extends PanelProvider
                 'Data',
                 'Settings',
             ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
+            // ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
+                TripOverview::class,
+                DispatchChart::class,
+                // PassengerChart::class,
+                // VehicleOverview::class,
+                // LatestIncident::class,
             ])
             ->middleware([
                 EncryptCookies::class,
