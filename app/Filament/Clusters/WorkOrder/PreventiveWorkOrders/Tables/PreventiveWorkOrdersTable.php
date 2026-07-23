@@ -18,7 +18,7 @@ class PreventiveWorkOrdersTable
                     ->label('Job Order No.')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('vehicle.plate_number')
+                TextColumn::make('vehicle.plate_no')
                     ->label('Plate Number')
                     ->sortable()
                     ->searchable(),
@@ -28,7 +28,7 @@ class PreventiveWorkOrdersTable
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('preventive_maintenance_type')
-                    ->label('Preventive Maintenance Type')
+                    ->label('Type')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('job_order_assigned_date')

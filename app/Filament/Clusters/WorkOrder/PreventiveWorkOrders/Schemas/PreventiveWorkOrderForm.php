@@ -93,26 +93,16 @@ class PreventiveWorkOrderForm
                                         ->label('Accomplished Date'),
                                     Select::make('supervisor_id')
                                         ->label('Supervisor')
-                                        // ->options(
-                                        //     fn (): Collection => Employee::where('CompNo', 1103)
-                                        //         ->whereNotNull('PostNo')
-                                        //         ->get()
-                                        //         ->mapWithKeys(fn ($employee) => [
-                                        //             $employee->EmpNo => $employee->full_name,
-                                        //         ])
-                                        // )
+                                        ->relationship('employee', 'employee_no')
+                                        ->getOptionLabelFromRecordUsing(fn (Employee $record) => $record->full_name)
+                                        ->searchable(['first_name', 'middle_name', 'last_name'])
                                         ->searchable()->preload(),
                                     Select::make('leadman_id')
                                         ->label('Leadman')
-                                        // ->options(
-                                        //     fn (): Collection => Employee::where('CompNo', 1103)
-                                        //         ->whereNotNull('PostNo')
-                                        //         ->get()
-                                        //         ->mapWithKeys(fn ($employee) => [
-                                        //             $employee->EmpNo => $employee->full_name,
-                                        //         ])
-                                        // )
-                                        ->searchable()->preload(),
+                                        ->relationship('employee', 'employee_no')
+                                        ->getOptionLabelFromRecordUsing(fn (Employee $record) => $record->full_name)
+                                        ->searchable(['first_name', 'middle_name', 'last_name'])
+                                        ->preload(),
                                 ])->columns([
                                     'default' => 1,
                                     'sm' => 2,
