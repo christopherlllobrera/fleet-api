@@ -19,36 +19,22 @@ class CorrectiveWorkOrdersTable
                     ->sortable()
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('plateNo.plate_number')
+                TextColumn::make('plateNo.plate_no')
                     ->label('Vehicle')
-                    ->searchable()
-                    ->sortable()
-                    ->formatStateUsing(fn ($record) =>
-                        $record->plateNo
-                            ? "{$record->plateNo->plate_number} - {$record->plateNo->maker} {$record->plateNo->model}"
-                            : 'N/A'
-                    )
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('plateNo.vehicle_type')
-                    ->label('Vehicle Type')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
 
-                TextColumn::make('driverName.name')
+                TextColumn::make('driverName.full_name')
                     ->label('Driver')
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('contactPerson.name')
+                TextColumn::make('contactPerson.full_name')
                     ->label('Contact Person')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: false),
 
-                TextColumn::make('contactPerson.contact_number')
-                    ->label('Contact No.')
-                    ->prefix('+63')
-                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('vehicle_location')
                     ->label('Vehicle Location')

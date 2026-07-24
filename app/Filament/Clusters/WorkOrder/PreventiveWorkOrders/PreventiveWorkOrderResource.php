@@ -20,13 +20,13 @@ class PreventiveWorkOrderResource extends Resource
 {
     protected static ?string $model = PreventiveWorkOrder::class;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Fleet Management';
+    protected static string | UnitEnum | null $navigationGroup = 'Work Order';
 
     protected static ?string $cluster = WorkOrderCluster::class;
 
     protected static ?string $navigationLabel = 'Preventive Work Order';
 
-    protected static ?int $navigationSort = 9;
+    protected static ?int $navigationSort = 1;
 
     protected static ?string $breadcrumb = 'Preventive Work Order';
 

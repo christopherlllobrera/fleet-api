@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
-use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Support\LogOptions;
 
 class CorrectiveWorkOrder extends Model
 {
@@ -75,11 +75,15 @@ class CorrectiveWorkOrder extends Model
         return $this->belongsTo(Employee::class);
     }
 
-    public function driver()
+    public function driverName()
     {
-        return $this->belongsTo(Driver::class);
+        return $this->belongsTo(Employee::class, 'driver_name_id');
     }
 
+    public function contactPerson()
+    {
+        return $this->belongsTo(Employee::class, 'contact_person_id');
+    }
 
     public function getFullNameAttribute()
     {
@@ -89,16 +93,6 @@ class CorrectiveWorkOrder extends Model
     public function plateNo()
     {
         return $this->belongsTo(Vehicle::class, 'plate_no_id');
-    }
-
-    public function driverName()
-    {
-        return $this->belongsTo(Employee::class, 'driver_name_id');
-    }
-
-    public function contactPerson()
-    {
-        return $this->belongsTo(Employee::class);
     }
 
     public function workOrder()
