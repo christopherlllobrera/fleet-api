@@ -20,13 +20,13 @@ class CorrectiveWorkOrderResource extends Resource
 {
     protected static ?string $model = CorrectiveWorkOrder::class;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Fleet Management';
+    protected static string | UnitEnum | null $navigationGroup = 'Work Order';
 
     protected static ?string $cluster = WorkOrderCluster::class;
 
     protected static ?string $navigationLabel = 'Corrective Work Order';
 
-    protected static ?int $navigationSort = 10;
+    protected static ?int $navigationSort = 2;
 
     protected static ?string $breadcrumb = 'Corrective Work Order';
 

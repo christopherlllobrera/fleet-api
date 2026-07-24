@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
-use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Support\LogOptions;
 
 class WorkOrder extends Model
 {
@@ -40,13 +40,14 @@ class WorkOrder extends Model
     {
         return $this->HasMany(PreventiveWorkOrder::class);
     }
+    
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class);
+    }
+    
     public function getFullNameAttribute()
     {
         return $this->employee ? trim($this->employee->first_name . ' ' . $this->employee->last_name) : 'No Name';
-    }
-
-     public function employee()
-    {
-        return $this->belongsTo(Employee::class);
     }
 }

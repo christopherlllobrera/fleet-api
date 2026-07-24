@@ -13,11 +13,8 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\FileUpload;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use App\Models\PreventiveWorkOrder;
-use App\Models\Vehicles;
-use App\Models\Driver;
+use App\Models\CorrectiveWorkOrder;
 use App\Models\Employee;
 
 class CorrectiveWorkOrderForm
@@ -40,23 +37,30 @@ class CorrectiveWorkOrderForm
                                         ->placeholder('e.g., CM-' . date('Y') . '-00001') //CM-YYYY-XXXXX
                                         ->default(function () {
                                             $currentYear = date('Y');
-                                            $JobOrderNo = PreventiveWorkOrder::orderBy('job_order_no', 'desc')->first()?->job_order_no;
-                                            if ($JobOrderNo) {
-                                                $lastNumber = (int) Str::afterLast($JobOrderNo, '-');
-                                                return 'CM-' . $currentYear . '-' . str_pad(++$lastNumber, 6, '0', STR_PAD_LEFT);
-                                            } else {
-                                                return 'CM-' . $currentYear . '-00001';
+
+                                            $latestJobOrder = CorrectiveWorkOrder::query()
+                                                ->whereNotNull('job_order_no')
+                                                ->where('job_order_no', 'like', 'CM-' . $currentYear . '-%')
+                                                ->orderByDesc('job_order_no')
+                                                ->first();
+
+                                            if ($latestJobOrder?->job_order_no) {
+                                                $lastNumber = (int) Str::afterLast($latestJobOrder->job_order_no, '-');
+
+                                                return 'CM-' . $currentYear . '-' . str_pad($lastNumber + 1, 6, '0', STR_PAD_LEFT);
                                             }
+
+                                            return 'CM-' . $currentYear . '-000001';
                                         })
                                         ->unique(ignoreRecord: true)
                                         ->maxLength(255),
                                     TextInput::make('job_order_sap_no')
                                         ->label('SAP Job Order No.')
-                                        ->unique(ignoreRecord: true)
+                                        ->unique()
                                         ->maxLength(255),
                                     TextInput::make('billing_invoice_no')
                                         ->label('Billing Invoice No.')
-                                        ->unique(ignoreRecord: true)
+                                        ->unique()
                                         ->maxLength(255),
                                     TextInput::make('charge_account_no')
                                         ->label('Charge Account No.')
@@ -116,9 +120,18 @@ class CorrectiveWorkOrderForm
                                     DatePicker::make('end_date')->label('End Date'),
                                     TextInput::make('contract_amount')
                                         ->numeric()->label('Contract Amount'),
-                                    Select::make('contact_person_name')->label('Contact Person')
-                                        ->relationship('employee', 'employee_no')
-                                        ->columnstart(1),
+                                    Select::make('contact_person_name')
+                                        ->label('Contact Person')
+                                        ->options(function (): array {
+                                            return Employee::query()
+                                                ->get()
+                                                ->mapWithKeys(fn (Employee $employee) => [
+                                                    $employee->full_name => $employee->full_name,
+                                                ])
+                                                ->all();
+                                        })
+                                        ->searchable()
+                                        ->preload(),
                                     TextInput::make('contact_person_email'
                                         )->label('Email')->email(),
                                     TextInput::make('contact_person_no')
@@ -161,7 +174,7 @@ class CorrectiveWorkOrderForm
                                                     $set('vehicle_power_type_id', null);
                                                     return;
                                                 }
-                                                
+
                                                 $vehicle = \App\Models\Vehicle::with(['maker', 'vehiclePowerType'])->find($state);
                                                 if ($vehicle) {
                                                     $set('model', $vehicle->model);
@@ -172,7 +185,7 @@ class CorrectiveWorkOrderForm
                                             })
                                             ->afterStateHydrated(function (callable $set, $state) {
                                                 if (!$state) return;
-                                                
+
                                                 $vehicle = \App\Models\Vehicle::with(['maker', 'vehiclePowerType'])->find($state);
                                                 if ($vehicle) {
                                                     $set('model', $vehicle->model);
@@ -230,10 +243,9 @@ class CorrectiveWorkOrderForm
                                 ->schema([
                                     Select::make('driver_name_id')
                                         ->label('Driver')
-                                        ->options(
-                                            Driver::with('employee')->get()->pluck('full_name', 'id')->toArray()
-                                        )
-                                        ->searchable()
+                                        ->relationship('driverName', 'employee_no')
+                                        ->getOptionLabelFromRecordUsing(fn (Employee $record) => $record->full_name)
+                                        ->searchable(['first_name', 'middle_name', 'last_name'])
                                         ->preload()
                                         ->required()
                                         ->live()
@@ -278,8 +290,9 @@ class CorrectiveWorkOrderForm
                                     ->suffixIcon('heroicon-o-building-office-2'),
                                     Select::make('contact_person_id')
                                         ->label('Contact Person')
-                                        ->options(Employee::all()->pluck('full_name', 'id'))
-                                        ->searchable()
+                                        ->relationship('contactPerson', 'employee_no')
+                                        ->getOptionLabelFromRecordUsing(fn (Employee $record) => $record->full_name)
+                                        ->searchable(['first_name', 'middle_name', 'last_name'])
                                         ->preload()
                                         ->required()
                                         ->live(),
@@ -404,52 +417,48 @@ class CorrectiveWorkOrderForm
                                                 ->defaultItems(1)
                                                 ->label('Issuance of Materials Used')
                                                 ->schema([
-                                                            TextInput::make('STF No.')
-                                                            ->label('STF No.')
-                                                            ->placeholder('e.g., STF-2024-001')
-                                                            ->maxLength(255),
-                                                            TextInput::make('quantity')
-                                                            ->label('Quantity')
-                                                            ->placeholder('e.g., 10')
-                                                            ->numeric(),
-
-                                                        Textarea::make('parts_description')
-                                                            ->label('Parts Description')
-                                                            ->placeholder('parts description...')
-                                                            ->rows(2),
+                                                    TextInput::make('stf_no')
+                                                        ->label('STF No.')
+                                                        ->placeholder('e.g., STF-2024-001')
+                                                        ->maxLength(255),
+                                                    TextInput::make('quantity')
+                                                        ->label('Quantity')
+                                                        ->placeholder('e.g., 10')
+                                                        ->numeric(),
+                                                    Textarea::make('parts_description')
+                                                        ->label('Parts Description')
+                                                        ->placeholder('parts description...')
+                                                        ->rows(2),
                                                 ])
                                                 ->columns(1)
                                                 ->itemLabel(fn (array $state): ?string =>
-                                                    $state['item_name'] ?? 'New Issuance of Materials Used'
+                                                    $state['stf_no'] ?? 'New Issuance of Materials Used'
                                                 )
                                                 ->addActionLabel('Add Issuance of Materials Used')
-                                                ->defaultItems(3)
                                                 ->collapsible()
                                                 ->cloneable(),
                                             Repeater::make('return_of_materials')
                                                 ->label('Return of Materials Used')
-                                                ->defaultItems(2)
+                                                ->defaultItems(1)
                                                 ->schema([
-                                                            TextInput::make('STF No.')
-                                                            ->label('STF No.')
-                                                            ->placeholder('e.g., STF-2024-001')
-                                                            ->maxLength(255),
-                                                            TextInput::make('quantity')
-                                                            ->label('Quantity')
-                                                            ->placeholder('e.g., 10')
-                                                            ->numeric(),
-
-                                                        Textarea::make('parts_description')
-                                                            ->label('Parts Description')
-                                                            ->placeholder('parts description...')
-                                                            ->rows(2),
+                                                    TextInput::make('stf_no')
+                                                        ->label('STF No.')
+                                                        ->placeholder('e.g., STF-2024-001')
+                                                        ->maxLength(255),
+                                                    TextInput::make('quantity')
+                                                        ->label('Quantity')
+                                                        ->placeholder('e.g., 10')
+                                                        ->numeric(),
+                                                    Textarea::make('parts_description')
+                                                        ->label('Parts Description')
+                                                        ->placeholder('parts description...')
+                                                        ->rows(2),
                                                 ])
                                                 ->columns(1)
                                                 ->itemLabel(fn (array $state): ?string =>
-                                                    $state['item_name'] ?? 'New Return of Materials Used'
+                                                    $state['stf_no'] ?? 'New Return of Materials Used'
                                                 )
                                                 ->addActionLabel('Add Return of Materials Used')
-                                                ->defaultItems(3)
                                                 ->collapsible()
                                                 ->cloneable(),
                                     ]),
