@@ -336,6 +336,8 @@ class VehicleSeeder extends Seeder
                 'company_id' => $companyId,
                 'business_unit_id' => $buId,
                 'plate_no' => trim($row[2]),
+                'device_sn' => null,
+                'init_odo' => null,
                 'maker_id' => $makers[$makerKey] ?? null,
                 'model' => trim($row[3]),
                 'year' => now(),

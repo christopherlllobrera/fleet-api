@@ -15,11 +15,13 @@ return new class extends Migration
             $table->id();
             $table->foreignId('company_id')->constrained()->cascadeOnDelete();
             $table->foreignId('business_unit_id')->constrained()->cascadeOnDelete();
-            $table->string('plate_no');
+            $table->string('plate_no')->nullable();
+            $table->string('device_sn')->nullable();
+            $table->string('init_odo')->nullable();
             $table->foreignId('maker_id')->constrained()->cascadeOnDelete();
-            $table->string('model');
-            $table->string('year');
-            $table->string('status');
+            $table->string('model')->nullable();
+            $table->string('year')->nullable();
+            $table->string('status')->nullable();
             $table->foreignId('vehicle_category_id')->constrained()->cascadeOnDelete();
             $table->foreignId('vehicle_power_type_id')->constrained()->cascadeOnDelete();
             $table->foreignId('vehicle_group_id')->constrained()->cascadeOnDelete();

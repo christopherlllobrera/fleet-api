@@ -12,6 +12,7 @@ use Filament\Support\Enums\Size;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class DispatchesTable
 {
@@ -34,10 +35,19 @@ class DispatchesTable
                     ->searchable(),
                 TextColumn::make('vehicle.plate_no')
                     ->label('Plate No.')
+                    ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('driver.employee.full_name')
                     ->label('Driver')
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHas('driver.employee', function (Builder $employeeQuery) use ($search): void {
+                            $employeeQuery
+                                ->where('first_name', 'like', "%{$search}%")
+                                ->orWhere('last_name', 'like', "%{$search}%")
+                                ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$search}%"]);
+                        });
+                    })
                     ->sortable(),
                 TextColumn::make('requesting_office.office_name')
                     ->label('Office')
@@ -65,7 +75,8 @@ class DispatchesTable
                     ->searchable(),
                 TextColumn::make('departure_time')
                     ->time()
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -86,14 +97,14 @@ class DispatchesTable
                 ActionGroup::make([
                     EditAction::make(),
                     FuelAction::make(),
-                    IncidentAction::make()
+                    IncidentAction::make(),
 
-                ])
-                    // ->label('More actions')
-                    // ->icon('heroicon-m-ellipsis-vertical')
-                    // ->size(Size::Small)
-                    // ->color('primary')
-                    // ->button(),
+                ]),
+                // ->label('More actions')
+                // ->icon('heroicon-m-ellipsis-vertical')
+                // ->size(Size::Small)
+                // ->color('primary')
+                // ->button(),
 
             ])
             ->toolbarActions([

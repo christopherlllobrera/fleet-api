@@ -26,21 +26,21 @@ class FleetDashboard extends Dashboard
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedHome;
 
-    // public function filtersForm(Schema $schema): Schema
-    // {
-    //     return $schema
-    //         ->components([
-    //             Section::make('Find Events by Date')
-    //                 ->icon('heroicon-o-funnel')
-    //                 ->collapsible()
-    //                 ->schema([
-    //                     DatePicker::make('from'),
-    //                     DatePicker::make('to'),
-    //                 ])
-    //                 ->columns(2)
-    //                 ->columnspanfull(),
-    //         ]);
-    // }
+    public function filtersForm(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                Section::make('Find Events by Date')
+                    ->icon('heroicon-o-funnel')
+                    ->collapsible()
+                    ->schema([
+                        DatePicker::make('from'),
+                        DatePicker::make('to'),
+                    ])
+                    ->columns(2)
+                    ->columnspanfull(),
+            ]);
+    }
 
     public function getWidgets(): array
     {
