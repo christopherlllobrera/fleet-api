@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    'carmen_fleet' => [
+        'base_url'  => env('CARMEN_FLEET_BASE_URL', 'https://apis.carmen.asia/api'),
+        'token'     => env('CARMEN_FLEET_API_TOKEN'),
+        'endpoint'  => env('CARMEN_FLEET_ENDPOINT', '/vehicles/locations'),
+        'cache_ttl' => (int) env('CARMEN_FLEET_CACHE_TTL', 6),
+    ],
+
 ];

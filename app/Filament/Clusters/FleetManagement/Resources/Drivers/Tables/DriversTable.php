@@ -7,6 +7,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class DriversTable
 {
@@ -16,7 +17,14 @@ class DriversTable
             ->columns([
                 TextColumn::make('employee.full_name')
                     ->label('Name')
-                    ->searchable()
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHas('employee', function (Builder $employeeQuery) use ($search): void {
+                            $employeeQuery
+                                ->where('first_name', 'like', "%{$search}%")
+                                ->orWhere('last_name', 'like', "%{$search}%")
+                                ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$search}%"]);
+                        });
+                    })
                     ->sortable(),
                 TextColumn::make('employee.employee_no')
                     ->label('Employee No.')

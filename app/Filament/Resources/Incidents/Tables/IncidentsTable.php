@@ -5,9 +5,9 @@ namespace App\Filament\Resources\Incidents\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Filament\Tables\Columns\SelectColumn;
 
 class IncidentsTable
 {
@@ -20,9 +20,9 @@ class IncidentsTable
                 TextColumn::make('reference_no')
                     ->label('Reference No.')->searchable(),
                 TextColumn::make('dispatch.ticket_no')
-                    ->label('Ticket No.')->sortable(),
+                    ->label('Ticket No.')->sortable()->searchable(),
                 TextColumn::make('vehicle.plate_no')
-                    ->label('Plate No.')->sortable(),
+                    ->label('Plate No.')->sortable()->searchable(),
                 TextColumn::make('reported_at')
                     ->label('Reported At')
                     ->searchable()
