@@ -12,6 +12,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Wizard;
 use Filament\Schemas\Components\Wizard\Step;
@@ -57,12 +58,18 @@ class CorrectiveWorkOrderForm
                                         ->maxLength(255),
                                     TextInput::make('job_order_sap_no')
                                         ->label('SAP Job Order No.')
-                                        ->unique()
-                                        ->maxLength(255),
+                                        ->unique(ignoreRecord: true)
+                                        ->maxLength(255)
+                                        ->validationMessages([
+                                            'unique' => 'The SAP Job Order No. has already been used.',
+                                        ]),
                                     TextInput::make('billing_invoice_no')
                                         ->label('Billing Invoice No.')
-                                        ->unique()
-                                        ->maxLength(255),
+                                        ->unique(ignoreRecord: true)
+                                        ->maxLength(255)
+                                        ->validationMessages([
+                                            'unique' => 'The Invoice No. has already been used.',
+                                        ]),
                                     TextInput::make('charge_account_no')
                                         ->label('Charge Account No.')
                                         ->placeholder('e.g., CA-MAINT-001')
@@ -91,6 +98,31 @@ class CorrectiveWorkOrderForm
                                     TextInput::make('invoice')
                                         ->label('Invoice')
                                         ->numeric(),
+                                    ToggleButtons::make('status')
+                                        ->inline()
+                                        ->options([
+                                            'Pending' => 'Pending',
+                                            'In Progress' => 'In Progress',
+                                            
+                                            'Completed' => 'Completed',
+                                            'Cancelled' => 'Cancelled',
+                                        ])
+                                        ->colors([
+                                            'Pending' => 'gray',
+                                            'In Progress' => 'info',
+                                          
+                                            'Completed' => 'success',
+                                            'Cancelled' => 'danger',
+                                        ])
+                                        ->icons([
+                                            'Pending' => 'heroicon-o-information-circle',
+                                            'In Progress' => 'heroicon-o-wrench-screwdriver',
+                                          
+                                            'Completed' => 'heroicon-o-check-circle',
+                                            'Cancelled' => 'heroicon-o-x-circle',
+                                        ])
+                                        ->default('Pending')
+                                        ->columnSpanFull(),
                                 ])->columns([
                                     'default' => 1,
                                     'sm' => 2,
@@ -133,13 +165,16 @@ class CorrectiveWorkOrderForm
                                         })
                                         ->searchable()
                                         ->preload(),
-                                    TextInput::make('contact_person_email'
-                                    )->label('Email')->email(),
+                                    TextInput::make('contact_person_email')
+                                        ->label('Email')
+                                        ->email(),
                                     TextInput::make('contact_person_no')
-                                        ->label('Contact No.')->prefix('+63')->numeric(),
+                                        ->label('Contact No.')
+                                        ->prefix('+63')
+                                        ->numeric(),
                                     FileUpload::make('contracted_attachment')
                                         ->label('Contracted File Attachment')
-                                        ->columnSpanFull()->directory('vehicle_job_orders'),
+                                        ->directory('vehicle_job_orders'),
                                 ])->columns([
                                     'default' => 1,
                                     'sm' => 2,
@@ -199,27 +234,27 @@ class CorrectiveWorkOrderForm
                                         }
                                     }),
                                     TextInput::make('model')
-                                    ->label('Model')
-                                    ->readOnly()
-                                    ->dehydrated(false),
+                                        ->label('Model')
+                                        ->readOnly()
+                                        ->dehydrated(false),
                                     TextInput::make('maker_id')
-                                    ->label('Maker')
-                                    ->readOnly()
-                                    ->dehydrated(false),
+                                        ->label('Maker')
+                                        ->readOnly()
+                                        ->dehydrated(false),
                                     TextInput::make('year')
-                                    ->label('Year')
-                                    ->readOnly()
-                                    ->dehydrated(false),
+                                        ->label('Year')
+                                        ->readOnly()
+                                        ->dehydrated(false),
                                     TextInput::make('vehicle_power_type_id')
-                                    ->label('Vehicle Power Type')
-                                    ->readOnly()
-                                    ->dehydrated(false),
+                                        ->label('Vehicle Power Type')
+                                        ->readOnly()
+                                        ->dehydrated(false),
                                     TextInput::make('vehicle_location')
-                                    ->label('Vehicle Location')
-                                    ->placeholder('e.g., MLI , Meralco')
-                                    ->maxLength(255),
+                                        ->label('Vehicle Location')
+                                        ->placeholder('e.g., MLI , Meralco')
+                                        ->maxLength(255),
                                     TextInput::make('odometer_reading')
-                                    ->label('Odometer Reading (km)')
+                                        ->label('Odometer Reading (km)')
                                     ->placeholder('e.g., 25000')
                                     // ->extraAttributes()
                                     ->numeric(),
@@ -353,120 +388,6 @@ class CorrectiveWorkOrderForm
                                     ->columnSpanFull(),
                                 ]),
                         ]),
-                    Step::make('Work Details')
-                        ->icon('heroicon-o-wrench')
-                    // ->description('Record actual work performed and time spent')
-                        ->schema([
-                            Section::make('Work Time Tracking')
-                                ->description('Track time spent on different work activities')
-                                ->icon('heroicon-o-clock')
-                                ->collapsible()
-                                ->schema([
-                                    Repeater::make('actual_work_time')
-                                    ->label('Actual Work Done')
-                                    ->schema([
-                                        Select::make('work_type')
-                                            ->label('Work Type')
-                                            ->options([
-                                                'diagnosis' => 'Diagnosis',
-                                                'repair' => 'Repair Work',
-                                                'maintenance' => 'Maintenance',
-                                                'testing' => 'Testing',
-                                                'inspection' => 'Inspection',
-                                                'parts_replacement' => 'Parts Replacement',
-                                                'cleaning' => 'Cleaning',
-                                                'other' => 'Other',
-                                            ])
-                                            ->required()
-                                            ->native(false),
-                                        DatePicker::make('date')
-                                            ->label('Date')
-                                            ->required()
-                                            ->default(now()),
-
-                                        TimePicker::make('start_time')
-                                            ->label('Start Time')
-                                            ->default(now())
-                                            ->required()
-                                            ->seconds(false),
-
-                                        TimePicker::make('end_time')
-                                            ->label('End Time')
-                                            ->required()
-                                            ->seconds(false),
-
-                                        TextInput::make('technician_name')
-                                            ->label('Technician/Mechanic')
-                                            ->placeholder('Name of person who performed the work')
-                                            ->maxLength(255),
-
-                                        Textarea::make('work_description')
-                                            ->label('Work Description or Remarks')
-                                            ->placeholder('Describe the work performed...')
-                                            ->rows(2),
-                                    ])
-                                    ->columns(1)
-                                    ->itemLabel(fn (array $state): ?string => $state['work_type'] ? ucfirst(str_replace('_', ' ', $state['work_type'])) : null
-                                    )
-                                    ->addActionLabel('Add Work Time Entry')
-                                    ->defaultItems(0)
-                                    ->collapsible()
-                                    ->cloneable(),
-                                ]),
-                            Section::make('Materials Used')
-                                ->description('Keep a detailed list of all materials, parts, and supplies applied to this job order.')
-                                ->icon('heroicon-o-cube-transparent')
-                                ->collapsible()
-                                ->schema([
-                                    Repeater::make('issuance_of_materials')
-                                    ->defaultItems(0)
-                                    ->label('Issuance of Materials Used')
-                                    ->schema([
-                                        TextInput::make('stf_no')
-                                            ->label('STF No.')
-                                            ->placeholder('e.g., STF-2024-001')
-                                            ->maxLength(255),
-                                        TextInput::make('quantity')
-                                            ->label('Quantity')
-                                            ->placeholder('e.g., 10')
-                                            ->numeric(),
-                                        Textarea::make('parts_description')
-                                            ->label('Parts Description')
-                                            ->placeholder('parts description...')
-                                            ->rows(2),
-                                    ])
-                                    ->columns(1)
-                                    ->itemLabel(fn (array $state): ?string => $state['stf_no'] ?? 'New Issuance of Materials Used'
-                                    )
-                                    ->addActionLabel('Add Issuance of Materials Used')
-                                    ->collapsible()
-                                    ->cloneable(),
-                                    Repeater::make('return_of_materials')
-                                    ->label('Return of Materials Used')
-                                    ->defaultItems(0)
-                                    ->schema([
-                                        TextInput::make('stf_no')
-                                            ->label('STF No.')
-                                            ->placeholder('e.g., STF-2024-001')
-                                            ->maxLength(255),
-                                        TextInput::make('quantity')
-                                            ->label('Quantity')
-                                            ->placeholder('e.g., 10')
-                                            ->numeric(),
-                                        Textarea::make('parts_description')
-                                            ->label('Parts Description')
-                                            ->placeholder('parts description...')
-                                            ->rows(2),
-                                    ])
-                                    ->columns(1)
-                                    ->itemLabel(fn (array $state): ?string => $state['stf_no'] ?? 'New Return of Materials Used'
-                                    )
-                                    ->addActionLabel('Add Return of Materials Used')
-                                    ->collapsible()
-                                    ->cloneable(),
-                                ]),
-                        ]),
-
                 ])
                     ->columnSpanFull()
                     ->skippable(),

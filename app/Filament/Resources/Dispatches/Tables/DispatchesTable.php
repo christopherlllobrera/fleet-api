@@ -13,6 +13,9 @@ use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Actions\Action;
+use App\Filament\Resources\Dispatches\Pages\ViewDispatch;
+use App\Models\Dispatch;
 
 class DispatchesTable
 {
@@ -98,13 +101,12 @@ class DispatchesTable
                     EditAction::make(),
                     FuelAction::make(),
                     IncidentAction::make(),
+                    Action::make('view_dispatch')
+                        ->label('View')
+                        ->icon('heroicon-o-eye')
+                        ->url(fn (Dispatch $record): string => ViewDispatch::getUrl(['record' => $record])), 
 
                 ]),
-                // ->label('More actions')
-                // ->icon('heroicon-m-ellipsis-vertical')
-                // ->size(Size::Small)
-                // ->color('primary')
-                // ->button(),
 
             ])
             ->toolbarActions([
