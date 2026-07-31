@@ -6,7 +6,11 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\ActionGroup;
+use App\Filament\Clusters\WorkOrder\CorrectiveWorkOrders\Actions\MaterialUseAction;
+use App\Filament\Clusters\WorkOrder\CorrectiveWorkOrders\Actions\WorkTimeTrackingAction;
 
 class CorrectiveWorkOrdersTable
 {
@@ -17,8 +21,15 @@ class CorrectiveWorkOrdersTable
                 TextColumn::make('job_order_no')
                     ->label('Job Order No.')
                     ->sortable()
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
+                SelectColumn::make('status')
+                    ->options([
+                        'Pending' => 'Pending',
+                        'In Progress' => 'In Progress',
+                        'Completed' => 'Completed',
+                        'Cancelled' => 'Cancelled',
+                    ])
+                    ->searchable(),
                 TextColumn::make('plateNo.plate_no')
                     ->label('Vehicle')
                     ->sortable()
@@ -52,7 +63,11 @@ class CorrectiveWorkOrdersTable
                 //
             ])
             ->recordActions([
-                EditAction::make(),
+                ActionGroup::make([
+                    EditAction::make(),
+                    WorkTimeTrackingAction::make(),
+                    MaterialUseAction::make(),
+                ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

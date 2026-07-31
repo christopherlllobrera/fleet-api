@@ -15,7 +15,7 @@ class VehicleTracking extends Page
 
     protected static ?string $title = 'Vehicle Tracking';
 
-    protected static string $routePath = 'live-positions';
+    protected static string $routePath = 'vehicle-tracking';
 
     protected static string|UnitEnum|null $navigationGroup = 'Fleet';
 
