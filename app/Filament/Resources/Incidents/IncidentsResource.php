@@ -29,6 +29,16 @@ class IncidentsResource extends Resource
 
     protected static ?string $breadcrumb = 'Incidents';
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::where('status', 'Open')->count();
+    }
+
+    public static function getNavigationBadgeTooltip(): ?string
+    {
+        return 'The number of open incidents';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return IncidentsForm::configure($schema);

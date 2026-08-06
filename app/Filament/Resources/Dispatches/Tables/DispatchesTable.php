@@ -30,6 +30,7 @@ class DispatchesTable
                     ->options([
                         'Pending' => 'Pending',
                         'Assigned' => 'Assigned',
+                        'En Route' => 'En Route',
                         'Unassigned' => 'Unassigned',
                         'Unserved' => 'Unserved',
                         'Cancelled' => 'Cancelled',

@@ -5,8 +5,9 @@ namespace App\Filament\Widgets;
 use Filament\Actions\BulkActionGroup;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
+use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 use App\Models\Incident;
 use App\Filament\Resources\Incidents\IncidentsResource;
 use Filament\Tables\Columns\TextColumn;
@@ -15,14 +16,28 @@ use Filament\Actions\Action;
 
 class LatestIncident extends TableWidget
 {
+    use InteractsWithPageFilters;
+
     protected int | string | array $columnSpan = 'full';
 
     protected static ?string $title = 'Latest Incident';
 
+    protected static ?int $sort = 4;
+
     public function table(Table $table): Table
     {
         return $table
-            ->query(fn (): Builder => Incident::query())
+            ->query(function (): Builder {
+                $startDate = filled($this->pageFilters['startDate'] ?? null)
+                    ? Carbon::parse($this->pageFilters['startDate'])
+                    : null;
+                $endDate = filled($this->pageFilters['endDate'] ?? null)
+                    ? Carbon::parse($this->pageFilters['endDate'])
+                    : now();
+                return Incident::query()
+                    ->when($startDate, fn ($q) => $q->where('created_at', '>=', $startDate))
+                    ->when($endDate, fn ($q) => $q->where('created_at', '<=', $endDate));
+            })
             ->defaultPaginationPageOption(5)
             ->defaultSort('created_at', 'desc')
             ->columns([

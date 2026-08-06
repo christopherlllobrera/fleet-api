@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\CorrectiveWorkOrder;
 
 #[Fillable([
     'company_id',
@@ -48,5 +49,15 @@ class Vehicle extends Model
     public function maker()
     {
         return $this->belongsTo(Maker::class);
+    }
+
+    public function dispatches()
+    {
+        return $this->hasMany(Dispatch::class);
+    }
+
+    public function correctiveWorkOrders()
+    {
+        return $this->hasMany(CorrectiveWorkOrder::class, 'plate_no_id');
     }
 }

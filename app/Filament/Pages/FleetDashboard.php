@@ -7,7 +7,9 @@ use UnitEnum;
 use BackedEnum;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
 use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
 use Filament\Pages\Dashboard;
 use App\Filament\Widgets\TripOverview;
@@ -30,15 +32,27 @@ class FleetDashboard extends Dashboard
     {
         return $schema
             ->components([
-                Section::make('Find Events by Date')
-                    ->icon('heroicon-o-funnel')
-                    ->collapsible()
+                Section::make()
                     ->schema([
-                        DatePicker::make('from'),
-                        DatePicker::make('to'),
+                        DatePicker::make('startDate')
+                            ->maxDate(fn (Get $get) => $get('endDate') ?: now()),
+                        DatePicker::make('endDate')
+                            ->minDate(fn (Get $get) => $get('startDate') ?: now())
+                            ->maxDate(now()),
+                        Select::make('dispatchStatus')
+                            ->label('Dispatch status')
+                            ->options([
+                                'Requested' => 'Requested',
+                                'Assigned' => 'Assigned',
+                                'En Route' => 'En Route',
+                                'Completed' => 'Completed',
+                                'Cancelled' => 'Cancelled',
+                            ])
+                            ->multiple()
+                            ->searchable(),
                     ])
-                    ->columns(2)
-                    ->columnspanfull(),
+                    ->columns(3)
+                    ->columnSpanFull(),
             ]);
     }
 

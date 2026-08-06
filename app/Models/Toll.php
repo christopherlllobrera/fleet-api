@@ -19,7 +19,7 @@ class Toll extends Model
 
     public function dispatch(): BelongsTo
     {
-        return $this->belongsTo(Dispatchings::class, 'dispatch_id');
+        return $this->belongsTo(Dispatch::class, 'dispatch_id');
     }
 
     public function tollRoad(): BelongsTo
