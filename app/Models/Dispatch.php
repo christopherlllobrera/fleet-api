@@ -45,4 +45,19 @@ class Dispatch extends Model
     {
         return $this->hasMany(Passenger::class);
     }
+
+    public function vehicleEnergyLogs()
+    {
+        return $this->hasMany(VehicleEnergyLogs::class);
+    }
+
+    public function incidents()
+    {
+        return $this->hasMany(Incident::class);
+    }
+
+    public function tolls()
+    {
+        return $this->hasMany(Toll::class);
+    }
 }

@@ -34,7 +34,8 @@ class IncidentAction extends Action
             ->modalDescription('Please provide details about the incident for this dispatch.')
             ->form(self::getFormSchema())
             ->modalSubmitActionLabel('Submit Report')
-            ->action(fn (array $data, $record) => self::handle($data, $record));
+            ->action(fn (array $data, $record) => self::handle($data, $record))
+            ->fillForm(fn (array $data, $record) => self::hydrateForm($data, $record));
     }
 
     protected static function getFormSchema(): array
@@ -157,29 +158,87 @@ class IncidentAction extends Action
         ];
     }
 
+    protected static function hydrateForm(array $data, $record): array
+    {
+        // Get the most recent incident for this dispatch
+        $incident = Incident::where('dispatch_id', $record->id)
+            ->latest()
+            ->first();
+
+        if (! $incident) {
+            return [];
+        }
+
+        return [
+            'company_id' => $incident->company_id,
+            'reference_no' => $incident->reference_no,
+            'dispatch_no' => $record->ticket_no,
+            'vehicle_plate_no' => $record->vehicle->plate_no ?? null,
+            'reported_by' => $incident->reported_by,
+            'reported_at' => $incident->reported_at ? (is_string($incident->reported_at) ? $incident->reported_at : $incident->reported_at->format('Y-m-d')) : null,
+            'location' => $incident->location,
+            'description' => $incident->description,
+            'incident_severity' => $incident->incident_severity,
+            'priority' => $incident->priority,
+            'status' => $incident->status,
+            'type' => $incident->type,
+            'attachments' => $incident->attachments,
+        ];
+    }
+
     protected static function handle(array $data, $record): void
     {
         try {
-            Incident::create([
-                'company_id' => $data['company_id'] ?? $record->vehicle->company_id ?? null,
-                'reference_no' => $data['reference_no'] ?? null,
-                'dispatch_id' => $record->id,
-                'vehicle_id' => $record->vehicle_id,
-                'reported_by' => $data['reported_by'] ?? null,
-                'reported_at' => $data['reported_at'] ?? now(),
-                'location' => $data['location'] ?? null,
-                'description' => $data['description'] ?? null,
-                'incident_severity' => $data['incident_severity'] ?? null,
-                'priority' => $data['priority'] ?? null,
-                'status' => $data['status'] ?? 'Open',
-                'type' => $data['type'] ?? null,
-                'attachments' => $data['attachments'] ?? null,
-            ]);
+            // Check if there's an existing incident for this dispatch
+            $existingIncident = Incident::where('dispatch_id', $record->id)
+                ->latest()
+                ->first();
 
-            Notification::make()
-                ->title('Incident reported successfully!')
-                ->success()
-                ->send();
+            if ($existingIncident) {
+                // Update existing incident
+                $existingIncident->update([
+                    'company_id' => $data['company_id'] ?? $record->vehicle->company_id ?? null,
+                    'reference_no' => $data['reference_no'] ?? null,
+                    'dispatch_id' => $record->id,
+                    'vehicle_id' => $record->vehicle_id,
+                    'reported_by' => $data['reported_by'] ?? null,
+                    'reported_at' => $data['reported_at'] ?? now(),
+                    'location' => $data['location'] ?? null,
+                    'description' => $data['description'] ?? null,
+                    'incident_severity' => $data['incident_severity'] ?? null,
+                    'priority' => $data['priority'] ?? null,
+                    'status' => $data['status'] ?? 'Open',
+                    'type' => $data['type'] ?? null,
+                    'attachments' => $data['attachments'] ?? null,
+                ]);
+
+                Notification::make()
+                    ->title('Incident updated successfully!')
+                    ->success()
+                    ->send();
+            } else {
+                // Create new incident
+                Incident::create([
+                    'company_id' => $data['company_id'] ?? $record->vehicle->company_id ?? null,
+                    'reference_no' => $data['reference_no'] ?? null,
+                    'dispatch_id' => $record->id,
+                    'vehicle_id' => $record->vehicle_id,
+                    'reported_by' => $data['reported_by'] ?? null,
+                    'reported_at' => $data['reported_at'] ?? now(),
+                    'location' => $data['location'] ?? null,
+                    'description' => $data['description'] ?? null,
+                    'incident_severity' => $data['incident_severity'] ?? null,
+                    'priority' => $data['priority'] ?? null,
+                    'status' => $data['status'] ?? 'Open',
+                    'type' => $data['type'] ?? null,
+                    'attachments' => $data['attachments'] ?? null,
+                ]);
+
+                Notification::make()
+                    ->title('Incident reported successfully!')
+                    ->success()
+                    ->send();
+            }
 
         } catch (\Throwable $e) {
             Log::error('IncidentAction failed: '.$e->getMessage());

@@ -10,6 +10,9 @@ use Filament\Schemas\Components\Tabs\Tab;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Dispatch;
 
+use App\Filament\Resources\Dispatches\Pages\DispatchExporter;
+use Filament\Actions\ExportAction;
+
 class ListDispatches extends ListRecords
 {
     protected static string $resource = DispatchResource::class;
@@ -18,6 +21,10 @@ class ListDispatches extends ListRecords
     {
         return [
             CreateAction::make()->label('Dispatch'),
+            ExportAction::make()
+                ->label('Export')
+                ->exporter(DispatchExporter::class)
+                ->enableVisibleTableColumnsByDefault()
         ];
     }
 
@@ -25,8 +32,12 @@ class ListDispatches extends ListRecords
     {
         return [
             'all' => Tab::make(),
+            'Pending' => Tab::make()
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'Pending')),
             'Assigned' => Tab::make()
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'Assigned')),
+            'En Route' => Tab::make()
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'En Route')),
             'Unassigned' => Tab::make()
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'Unassigned')),
             'Unserved' => Tab::make()

@@ -114,6 +114,11 @@ export function initFleetTracking(mapEl, endpoint) {
         if (!destroyed) map.invalidateSize();
     }));
 
+    const resizeObserver = new ResizeObserver(() => {
+        if (!destroyed) map.invalidateSize();
+    });
+    resizeObserver.observe(mapEl);
+
     const markers = {};
     const prevPositions = {};
     const headings = {};
@@ -122,6 +127,7 @@ export function initFleetTracking(mapEl, endpoint) {
 
     const FILTERS = ['all', 'moving', 'stationary', 'stale'];
     let activeFilter = 'all';
+    let searchQuery = '';
 
     function markerIcon(v) {
         const selected = v.id === selectedVehicleId ? ' is-selected' : '';
@@ -202,7 +208,9 @@ export function initFleetTracking(mapEl, endpoint) {
 
     function applyFilterToMap() {
         vehicles.forEach((v) => {
-            const visible = activeFilter === 'all' || v.state === activeFilter;
+            const visibleFilter = activeFilter === 'all' || v.state === activeFilter;
+            const visibleSearch = !searchQuery || (v.plate && v.plate.toLowerCase().includes(searchQuery));
+            const visible = visibleFilter && visibleSearch;
             const el = markers[v.id] && markers[v.id].getElement();
             if (el) el.style.display = visible ? '' : 'none';
         });
@@ -225,7 +233,11 @@ export function initFleetTracking(mapEl, endpoint) {
         if (!el) return;
         el.innerHTML = '';
         vehicles
-            .filter((v) => activeFilter === 'all' || v.state === activeFilter)
+            .filter((v) => {
+                const visibleFilter = activeFilter === 'all' || v.state === activeFilter;
+                const visibleSearch = !searchQuery || (v.plate && v.plate.toLowerCase().includes(searchQuery));
+                return visibleFilter && visibleSearch;
+            })
             .forEach((v) => {
                 const selected = v.id === selectedVehicleId;
                 const row = document.createElement('div');
@@ -299,7 +311,7 @@ export function initFleetTracking(mapEl, endpoint) {
         vehicles = fresh;
 
         if (fresh.length && fresh[0].fleet_name) {
-            const nameEl = document.getElementById('fleet-name');
+            const nameEl = document.getElementById('fleet-id');
             if (nameEl) nameEl.textContent = fresh[0].fleet_name;
         }
 
@@ -327,6 +339,15 @@ export function initFleetTracking(mapEl, endpoint) {
     }
 
     // ── Bootstrap ────────────────────────────────────────────────────────────
+    const searchInput = document.getElementById('vehicle-search');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value.trim().toLowerCase();
+            renderList();
+            applyFilterToMap();
+        });
+    }
+
     renderFilters();
     refresh();
     const pollTimer = setInterval(refresh, POLL_MS);
@@ -338,6 +359,7 @@ export function initFleetTracking(mapEl, endpoint) {
         abortController.abort();
         clearInterval(pollTimer);
         themeObserver.disconnect();
+        resizeObserver.disconnect();
         if (mapEl._leaflet_id === map._leaflet_id) {
             map.remove();
         }

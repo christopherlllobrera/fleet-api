@@ -20,6 +20,7 @@ use Filament\Schemas\Components\Wizard\Step;
 use Filament\Support\Enums\Size;
 use Filament\Support\Enums\Width;
 use Illuminate\Support\Facades\Log;
+use Filament\Schemas\Components\Text;
 
 class FuelAction extends Action
 {
@@ -38,7 +39,8 @@ class FuelAction extends Action
             ->modalDescription('Please provide fuel consumption and toll details for this dispatch.')
             ->steps(self::getSteps())
             ->modalSubmitActionLabel('Save All Details')
-            ->action(fn (array $data, $record) => self::handle($data, $record));
+            ->action(fn (array $data, $record) => self::handle($data, $record))
+            ->fillForm(fn (array $data, $record) => self::hydrateForm($data, $record));
     }
 
     protected static function getSteps(): array
@@ -85,6 +87,8 @@ class FuelAction extends Action
                 ->description('Add expressway and toll points manually.')
                 // ->skippable()
                 ->schema([
+                    Text::make('Click the delete button if no tolls were used for this trip.')
+                        ->color('neutral'),
                     Repeater::make('toll_entries')
                         ->label('Toll Entries')
                         ->columnSpanFull()
@@ -186,21 +190,60 @@ class FuelAction extends Action
         ];
     }
 
+    protected static function hydrateForm(array $data, $record): array
+    {
+        // Get the most recent fuel log for this dispatch
+        $fuelLog = VehicleEnergyLogs::where('dispatch_id', $record->id)
+            ->latest()
+            ->first();
+
+        // Get all toll entries for this dispatch
+        $tollEntries = Toll::where('dispatch_id', $record->id)
+            ->get()
+            ->map(function ($toll) {
+                return [
+                    'toll_road_id' => $toll->toll_road_id,
+                    'vehicle_class' => $toll->vehicle_class,
+                    'entry_point_id' => $toll->entry_point_id,
+                    'exit_point_id' => $toll->exit_point_id,
+                    'payment_method' => $toll->payment_method,
+                    'toll_fare' => $toll->toll_fare,
+                    'toll_attachments' => $toll->toll_attachments,
+                ];
+            })
+            ->toArray();
+
+        return [
+            'reference_no' => $fuelLog?->reference_no,
+            'power_type_id' => $fuelLog?->power_type_id,
+            'cost' => $fuelLog?->cost,
+            'fuel_attachment' => $fuelLog?->attachment,
+            'date' => $fuelLog?->date ? (is_string($fuelLog->date) ? $fuelLog->date : $fuelLog->date->format('Y-m-d')) : null,
+            'toll_entries' => $tollEntries,
+        ];
+    }
+
     protected static function handle(array $data, $record): void
     {
         try {
-            // 1. Create Fuel/Energy Log
-            VehicleEnergyLogs::create([
-                'dispatch_id' => $record->id,
-                'vehicle_id' => $record->vehicle_id,
-                'reference_no' => $data['reference_no'] ?? null,
-                'power_type_id' => $data['power_type_id'] ?? null,
-                'date' => now(),
-                'cost' => $data['cost'] ?? 0,
-                'attachment' => $data['fuel_attachment'] ?? null,
-            ]);
+            // 1. Handle Fuel/Energy Log (create or update)
+            $fuelLog = VehicleEnergyLogs::updateOrCreate(
+                [
+                    'dispatch_id' => $record->id,
+                    'reference_no' => $data['reference_no'] ?? null,
+                ],
+                [
+                    'vehicle_id' => $record->vehicle_id,
+                    'power_type_id' => $data['power_type_id'] ?? null,
+                    'date' => $data['date'] ?? now(),
+                    'cost' => $data['cost'] ?? 0,
+                    'attachment' => $data['fuel_attachment'] ?? null,
+                ]
+            );
 
-            // 2. Create Toll Entries
+            // 2. Handle Toll Entries (delete existing and recreate)
+            Toll::where('dispatch_id', $record->id)->delete();
+
             if (! empty($data['toll_entries'])) {
                 foreach ($data['toll_entries'] as $entry) {
                     Toll::create([

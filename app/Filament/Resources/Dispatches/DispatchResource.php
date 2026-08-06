@@ -29,6 +29,15 @@ class DispatchResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTruck;
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::where('status', 'Pending')->count();
+    }
+    public static function getNavigationBadgeTooltip(): ?string
+    {
+        return 'The number of pending dispatches';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return DispatchForm::configure($schema);
@@ -42,7 +51,10 @@ class DispatchResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\VehicleEnergyLogsRelationManager::class,
+            RelationManagers\TollsRelationManager::class,
+            RelationManagers\IncidentsRelationManager::class,
+           
         ];
     }
 
