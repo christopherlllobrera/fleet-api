@@ -13,5 +13,13 @@ use Illuminate\Database\Eloquent\Model;
 ])]
 class Odometer extends Model
 {
-    //
+    public function dispatch()
+    {
+        return $this->belongsTo(Dispatch::class);
+    }
+
+    public function vehicle()
+    {
+        return $this->belongsTo(Vehicle::class);
+    }
 }

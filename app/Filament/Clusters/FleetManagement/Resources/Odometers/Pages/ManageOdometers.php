@@ -3,17 +3,17 @@
 namespace App\Filament\Clusters\FleetManagement\Resources\Odometers\Pages;
 
 use App\Filament\Clusters\FleetManagement\Resources\Odometers\OdometerResource;
-use Filament\Actions\DeleteAction;
-use Filament\Resources\Pages\EditRecord;
+use Filament\Actions\CreateAction;
+use Filament\Resources\Pages\ManageRecords;
 
-class EditOdometer extends EditRecord
+class ManageOdometers extends ManageRecords
 {
     protected static string $resource = OdometerResource::class;
 
     protected function getHeaderActions(): array
     {
         return [
-            DeleteAction::make(),
+            CreateAction::make(),
         ];
     }
 }

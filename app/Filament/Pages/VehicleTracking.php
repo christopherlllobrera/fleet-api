@@ -9,6 +9,11 @@ use UnitEnum;
 
 class VehicleTracking extends Page
 {
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->hasRole('superadmin') ?? false;
+    }
+
     protected string $view = 'filament.pages.vehicle-tracking';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMap;
