@@ -4,10 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\CorrectiveWorkOrder;
 
 #[Fillable([
     'company_id',
+    'charge_account_id',
     'business_unit_id',
     'plate_no',
     'maker_id',

@@ -25,12 +25,15 @@ class DatabaseSeeder extends Seeder
             BachelorDegreeSeeder::class,
             MasteralDegreeSeeder::class,
             DoctorateDegreeSeeder::class,
+            CompanySeeder::class,
+            ChargeAccountSeeder::class,
             VehicleSeeder::class,
             EmployeeSeeder::class,
             TollRoadSeeder::class,
             TollPointSeeder::class,
             DriverSeeder::class,
             RequestingOfficeSeeder::class,
+            RolesAndPermissionsSeeder::class,
         ]);
     }
 }

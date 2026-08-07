@@ -186,6 +186,7 @@ class DispatchForm
                                         ->label('Plate No.')
                                         ->options(function (Get $get, ?string $state): array {
                                             $options = Vehicle::query()
+                                                ->where('vehicle_group_id', '!=', 4)
                                                 ->orderBy('plate_no')
                                                 ->pluck('plate_no', 'id')
                                                 ->toArray();

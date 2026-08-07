@@ -13,18 +13,19 @@ return new class extends Migration
     {
         Schema::create('vehicles', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('company_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('business_unit_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('charge_account_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('company_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('business_unit_id')->nullable()->constrained()->cascadeOnDelete();
             $table->string('plate_no')->nullable();
             $table->string('device_sn')->nullable();
             $table->string('init_odo')->nullable();
-            $table->foreignId('maker_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('maker_id')->nullable()->constrained()->cascadeOnDelete();
             $table->string('model')->nullable();
             $table->string('year')->nullable();
             $table->string('status')->nullable();
-            $table->foreignId('vehicle_category_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('vehicle_power_type_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('vehicle_group_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('vehicle_category_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('vehicle_power_type_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('vehicle_group_id')->nullable()->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

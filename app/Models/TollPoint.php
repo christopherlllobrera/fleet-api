@@ -12,6 +12,7 @@ use Spatie\Activitylog\Support\LogOptions;
 
 #[Fillable(['toll_road_id', 'name', 'type', 'latitude',
     'longitude', 'payment_method', 'is_active'])]
+
 class TollPoint extends Model
 {
     use HasFactory;

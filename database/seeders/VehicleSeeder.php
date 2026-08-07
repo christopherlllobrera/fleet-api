@@ -10,27 +10,25 @@ class VehicleSeeder extends Seeder
     /**
      * Run the database seeds.
      *
-     * CSV Column Mapping:
-     * [0] = row number
-     * [1] = code (N/A or TV-CR-xxx, etc.) — not stored
-     * [2] = plate_no
-     * [3] = model description (e.g., TOYOTA HILUX)
-     * [4] = vehicle group (LIGHT, MEDIUM, HEAVY)
-     * [5] = vehicle category (PICK UP, VAN, SEDAN, etc.)
-     * [6] = year
-     * [7] = power type (DIESEL, GASOLINE, LPG, GAS)
-     * [8] = maker name (TOYOTA, MITSUBISHI, etc.)
-     * [9] = business unit name
-     * [10] = project code — not stored
-     * [11] = project name — not stored
-     * [12] = status (Leasing, Charge to MLI, etc.)
-     * [13] = company type (Internal, External)
-     * [14] = created_at
-     * [15] = updated_at
+     * CSV Column Mapping (vehicle_2026.csv):
+     * [0]  = No. (row number — not stored)
+     * [1]  = Charge Account
+     * [2]  = plate_no
+     * [3]  = business_unit_id (Business Unit name)
+     * [4]  = model
+     * [5]  = year
+     * [6]  = maker_id (Maker name)
+     * [7]  = vehicle_category_id (Category name)
+     * [8]  = vehicle_group_id (Group name)
+     * [9]  = status
+     * [10] = vehicle_power_type_id (Power Type name)
      */
     public function run(): void
     {
         DB::disableQueryLog();
+
+        // Ensure Charge Accounts and Business Units are seeded first
+        $this->call(ChargeAccountSeeder::class);
 
         $rows = $this->loadCsv();
 
@@ -38,26 +36,35 @@ class VehicleSeeder extends Seeder
         $this->seedVehicleCategories($rows);
         $this->seedVehicleGroups($rows);
         $this->seedMakers($rows);
-        $this->seedCompaniesAndBusinessUnits($rows);
         $this->seedVehicles($rows);
     }
 
     /**
-     * Load CSV rows into an array.
+     * Load CSV rows into an array, skipping header line.
      *
      * @return array<int, array<int, string>>
      */
     private function loadCsv(): array
     {
         $rows = [];
-        $file = fopen(database_path('seeders/CSV/vehicles_consolidated.csv'), 'r');
+        $filePath = database_path('seeders/CSV/vehicle_2026.csv');
+
+        if (! file_exists($filePath)) {
+            return [];
+        }
+
+        $file = fopen($filePath, 'r');
+        fgetcsv($file); // skip header line
 
         while (($line = fgetcsv($file, 4096)) !== false) {
             if (empty(array_filter($line))) {
                 continue;
             }
-            // Trim whitespace from all fields
-            $rows[] = array_map('trim', $line);
+            $rows[] = array_map(function ($val) {
+                $val = trim($val);
+
+                return mb_check_encoding($val, 'UTF-8') ? $val : mb_convert_encoding($val, 'UTF-8', 'Windows-1252');
+            }, $line);
         }
 
         fclose($file);
@@ -66,14 +73,14 @@ class VehicleSeeder extends Seeder
     }
 
     /**
-     * Seed vehicle_power_types from unique values in CSV column [7].
+     * Seed vehicle_power_types from unique values in CSV column [10].
      *
      * @param  array<int, array<int, string>>  $rows
      */
     private function seedVehiclePowerTypes(array $rows): void
     {
         $powerTypes = collect($rows)
-            ->pluck(7)
+            ->pluck(10)
             ->map(fn (string $value) => strtoupper(trim($value)))
             ->filter()
             ->unique()
@@ -97,14 +104,14 @@ class VehicleSeeder extends Seeder
     }
 
     /**
-     * Seed vehicle_categories from unique values in CSV column [5].
+     * Seed vehicle_categories from unique values in CSV column [7].
      *
      * @param  array<int, array<int, string>>  $rows
      */
     private function seedVehicleCategories(array $rows): void
     {
         $categories = collect($rows)
-            ->pluck(5)
+            ->pluck(7)
             ->map(fn (string $value) => strtoupper(trim($value)))
             ->filter()
             ->unique()
@@ -129,14 +136,14 @@ class VehicleSeeder extends Seeder
     }
 
     /**
-     * Seed vehicle_groups from unique values in CSV column [4].
+     * Seed vehicle_groups from unique values in CSV column [8].
      *
      * @param  array<int, array<int, string>>  $rows
      */
     private function seedVehicleGroups(array $rows): void
     {
         $groups = collect($rows)
-            ->pluck(4)
+            ->pluck(8)
             ->map(fn (string $value) => strtoupper(trim($value)))
             ->filter()
             ->unique()
@@ -161,7 +168,25 @@ class VehicleSeeder extends Seeder
     }
 
     /**
-     * Seed makers from unique values in CSV column [8].
+     * Normalize dirty maker names.
+     */
+    private function normalizeMaker(string $raw): string
+    {
+        $name = strtoupper(trim($raw));
+        $map = [
+            'TOYOYA' => 'TOYOTA',
+            'HILUX' => 'TOYOTA',
+            'SUZUKIAPVCARRIERUV' => 'SUZUKI',
+            'HONDAWAVE' => 'HONDA',
+            'KOMATSUFORKLIFT' => 'KOMATSU',
+            'SINO' => 'SINOTRUK',
+        ];
+
+        return $map[$name] ?? $name;
+    }
+
+    /**
+     * Seed makers from unique values in CSV column [6].
      *
      * @param  array<int, array<int, string>>  $rows
      */
@@ -183,11 +208,13 @@ class VehicleSeeder extends Seeder
             'CATERPILLAR' => 'United States',
             'MAHINDRA' => 'India',
             'TATA' => 'India',
+            'BYD' => 'China',
+            'SINOTRUK' => 'China',
         ];
 
         $makers = collect($rows)
-            ->pluck(8)
-            ->map(fn (string $value) => strtoupper(trim($value)))
+            ->pluck(6)
+            ->map(fn (string $value) => $this->normalizeMaker($value))
             ->filter()
             ->unique()
             ->values();
@@ -211,82 +238,13 @@ class VehicleSeeder extends Seeder
     }
 
     /**
-     * Seed companies from CSV column [13] and business_units from column [9].
-     *
-     * @param  array<int, array<int, string>>  $rows
-     */
-    private function seedCompaniesAndBusinessUnits(array $rows): void
-    {
-        // Seed companies from column [13] (Internal / External)
-        $companyNames = collect($rows)
-            ->pluck(13)
-            ->map(fn (string $value) => trim($value))
-            ->filter()
-            ->unique()
-            ->values();
-
-        $existingCompanies = DB::table('companies')->pluck('name', 'id');
-
-        foreach ($companyNames as $companyName) {
-            if (! $existingCompanies->contains($companyName)) {
-                DB::table('companies')->insert([
-                    'name' => $companyName,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-            }
-        }
-
-        // Refresh company lookup
-        $companyLookup = DB::table('companies')->pluck('id', 'name');
-
-        // Seed business units — each unique combo of (company, business_unit_name)
-        $businessUnits = collect($rows)
-            ->map(fn (array $row) => [
-                'company' => trim($row[13]),
-                'business_unit' => trim($row[9]),
-            ])
-            ->filter(fn (array $item) => ! empty($item['company']) && ! empty($item['business_unit']))
-            ->unique(fn (array $item) => $item['company'].'|'.$item['business_unit'])
-            ->values();
-
-        $existingBUs = DB::table('business_units')
-            ->get(['company_id', 'name'])
-            ->map(fn ($bu) => $bu->company_id.'|'.$bu->name);
-
-        $inserts = [];
-        foreach ($businessUnits as $bu) {
-            $companyId = $companyLookup[$bu['company']] ?? null;
-            if ($companyId === null) {
-                continue;
-            }
-            $key = $companyId.'|'.$bu['business_unit'];
-            if (! $existingBUs->contains($key)) {
-                $inserts[] = [
-                    'company_id' => $companyId,
-                    'name' => $bu['business_unit'],
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
-                $existingBUs->push($key);
-            }
-        }
-
-        if (! empty($inserts)) {
-            foreach (array_chunk($inserts, 500) as $chunk) {
-                DB::table('business_units')->insert($chunk);
-            }
-        }
-    }
-
-    /**
      * Seed vehicles from the CSV.
      *
      * @param  array<int, array<int, string>>  $rows
      */
     private function seedVehicles(array $rows): void
     {
-        // Build lookup maps (case-insensitive)
+        // Build lookup maps (case-insensitive where appropriate)
         $powerTypes = DB::table('vehicle_power_types')
             ->pluck('id', 'name')
             ->mapWithKeys(fn ($id, $name) => [strtoupper($name) => $id]);
@@ -303,44 +261,39 @@ class VehicleSeeder extends Seeder
             ->pluck('id', 'name')
             ->mapWithKeys(fn ($id, $name) => [strtoupper($name) => $id]);
 
-        $companies = DB::table('companies')->pluck('id', 'name');
-
-        $businessUnits = DB::table('business_units')
-            ->get(['id', 'company_id', 'name'])
-            ->mapWithKeys(fn ($bu) => [$bu->company_id.'|'.$bu->name => $bu->id]);
+        $businessUnits = DB::table('business_units')->pluck('id', 'name');
+        $chargeAccounts = DB::table('charge_accounts')->pluck('id', 'name');
 
         $inserts = [];
 
         foreach ($rows as $row) {
-            $companyName = trim($row[13]);
-            $buName = trim($row[9]);
-            $companyId = $companies[$companyName] ?? null;
-            $buId = $businessUnits[($companyId ?? '').'|'.$buName] ?? null;
+            $caName = trim($row[1] ?? '');
+            $buName = trim($row[3] ?? '');
 
-            if ($companyId === null || $buId === null) {
-                continue;
-            }
+            $chargeAccountId = $chargeAccounts[$caName] ?? null;
+            $buId = $businessUnits[$buName] ?? null;
 
-            $powerTypeKey = strtoupper(trim($row[7]));
-            $categoryKey = strtoupper(trim($row[5]));
-            $groupKey = strtoupper(trim($row[4]));
-            $makerKey = strtoupper(trim($row[8]));
+            $makerKey = $this->normalizeMaker(trim($row[6] ?? ''));
+            $categoryKey = strtoupper(trim($row[7] ?? ''));
+            $groupKey = strtoupper(trim($row[8] ?? ''));
+            $powerTypeKey = strtoupper(trim($row[10] ?? ''));
 
-            $year = trim($row[6]);
+            $year = trim($row[5] ?? '');
             $year = ($year === '' || $year === '0') ? null : $year;
 
-            $status = trim($row[12]);
+            $status = trim($row[9] ?? '');
             $status = $status === '' ? 'Unknown' : $status;
 
             $inserts[] = [
-                'company_id' => $companyId,
+                'charge_account_id' => $chargeAccountId,
+                'company_id' => null,
                 'business_unit_id' => $buId,
-                'plate_no' => trim($row[2]),
+                'plate_no' => trim($row[2] ?? ''),
                 'device_sn' => null,
                 'init_odo' => null,
                 'maker_id' => $makers[$makerKey] ?? null,
-                'model' => trim($row[3]),
-                'year' => now(),
+                'model' => trim($row[4] ?? ''),
+                'year' => $year,
                 'status' => $status,
                 'vehicle_category_id' => $categories[$categoryKey] ?? null,
                 'vehicle_power_type_id' => $powerTypes[$powerTypeKey] ?? null,
@@ -350,7 +303,7 @@ class VehicleSeeder extends Seeder
             ];
         }
 
-        // Insert in chunks to avoid memory issues
+        // Insert in chunks to avoid query parameter limits
         foreach (array_chunk($inserts, 500) as $chunk) {
             DB::table('vehicles')->insert($chunk);
         }

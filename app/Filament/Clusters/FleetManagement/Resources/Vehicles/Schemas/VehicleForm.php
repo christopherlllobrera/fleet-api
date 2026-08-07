@@ -36,8 +36,8 @@ class VehicleForm
                             ->maxLength(4),
                         Select::make('status')
                             ->options([
-                                'active' => 'Active',
-                                'inactive' => 'Inactive',
+                                'Operational' => 'Operational',
+                                'Non-Operational' => 'Non-Operational',
                             ]),
                     ]),
                 Section::make()

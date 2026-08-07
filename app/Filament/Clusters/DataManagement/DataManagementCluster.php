@@ -12,4 +12,9 @@ class DataManagementCluster extends Cluster
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedFolderOpen;
 
     protected static string|UnitEnum|null $navigationGroup = 'Data';
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->hasRole('superadmin') ?? false;
+    }
 }
