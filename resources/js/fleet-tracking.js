@@ -11,7 +11,7 @@ function isDark( ) {
 }
 
 function classify(v) {
-    if (v.gps_stale) return 'stale';
+    if (v.gps_stale) return 'offline';
     if (v.speed > 0) return 'moving';
     return 'stationary';
 }
@@ -77,26 +77,30 @@ function facingTransform(heading ) {
     return Math.sin((heading * Math.PI) / 180) < 0 ? 'scaleX(-1)' : 'scaleX(1)';
 }
 
-export function initFleetTracking(mapEl, endpoint) {
+export function initFleetTracking(mapEl, endpoint, options = {}) {
     // Guard against a second init landing on this container before the
     // previous instance's teardown has run.
     if (mapEl._leaflet_id) {
         mapEl._fleetTeardown?.();
     }
 
+    const lightTile = options.tileUrl || LIGHT_TILE;
+    const darkTile = options.tileUrlDark || DARK_TILE;
+    const attribution = options.tileAttribution || TILE_ATTRIBUTION;
+
     const map = L.map(mapEl, { zoomControl: true }).setView([14.58, 121.03], 11);
 
-    let tileLayer = L.tileLayer(isDark() ? DARK_TILE : LIGHT_TILE, {
-        attribution: TILE_ATTRIBUTION,
+    let tileLayer = L.tileLayer(isDark() ? darkTile : lightTile, {
+        attribution: attribution,
         maxZoom: 19,
     }).addTo(map);
 
     const themeObserver = new MutationObserver(() => {
-        const wantUrl = isDark() ? DARK_TILE : LIGHT_TILE;
+        const wantUrl = isDark() ? darkTile : lightTile;
         if (tileLayer._url !== wantUrl) {
             map.removeLayer(tileLayer);
             tileLayer = L.tileLayer(wantUrl, {
-                attribution: TILE_ATTRIBUTION,
+                attribution: attribution,
                 maxZoom: 19,
             }).addTo(map);
         }
@@ -125,7 +129,7 @@ export function initFleetTracking(mapEl, endpoint) {
     let vehicles = [];
     let selectedVehicleId = null;
 
-    const FILTERS = ['all', 'moving', 'stationary', 'stale'];
+    const FILTERS = ['all', 'moving', 'stationary', 'offline'];
     let activeFilter = 'all';
     let searchQuery = '';
 
@@ -217,14 +221,14 @@ export function initFleetTracking(mapEl, endpoint) {
     }
 
     function renderCounts() {
-        const counts = { moving: 0, stationary: 0, stale: 0 };
+        const counts = { moving: 0, stationary: 0, offline: 0 };
         vehicles.forEach((v) => counts[v.state]++);
         const el = document.getElementById('counts');
         if (!el) return;
         el.innerHTML = `
             <div class="flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-900 dark:bg-gray-800 dark:text-gray-100"><span class="h-2.5 w-2.5 rounded-full bg-green-500"></span>${counts.moving} moving</div>
             <div class="flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-900 dark:bg-gray-800 dark:text-gray-100"><span class="h-2.5 w-2.5 rounded-full bg-gray-500"></span>${counts.stationary} stationary</div>
-            <div class="flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-900 dark:bg-gray-800 dark:text-gray-100"><span class="h-2.5 w-2.5 rounded-full bg-red-600"></span>${counts.stale} stale</div>
+            <div class="flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-900 dark:bg-gray-800 dark:text-gray-100"><span class="h-2.5 w-2.5 rounded-full bg-red-600"></span>${counts.offline} offline</div>
         `;
     }
 
@@ -253,7 +257,7 @@ export function initFleetTracking(mapEl, endpoint) {
                         <div class="truncate text-sm font-medium text-gray-950 dark:text-white">${v.plate}</div>
                         <div class="mt-1 text-xs text-gray-500 dark:text-gray-400">${v.car_maker} ${v.car_model} · ${relTime(v.last_update)}</div>
                     </div>
-                    <div class="shrink-0 rounded-full border px-2.5 py-1 text-[11px] font-medium capitalize ${v.state === 'moving' ? 'border-green-500 text-green-600 dark:border-green-400 dark:text-green-400' : v.state === 'stale' ? 'border-red-500 text-red-600 dark:border-red-400 dark:text-red-400' : 'border-gray-300 bg-gray-50 text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300'}">${v.state}</div>
+                    <div class="shrink-0 rounded-full border px-2.5 py-1 text-[11px] font-medium capitalize ${v.state === 'moving' ? 'border-green-500 text-green-600 dark:border-green-400 dark:text-green-400' : v.state === 'offline' ? 'border-red-500 text-red-600 dark:border-red-400 dark:text-red-400' : 'border-gray-300 bg-gray-50 text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300'}">${v.state}</div>
                 `;
                 row.onclick = () => selectVehicle(v.id, { flyTo: true });
                 el.appendChild(row);

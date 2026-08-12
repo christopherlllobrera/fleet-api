@@ -186,13 +186,13 @@ class DispatchForm
                                         ->label('Plate No.')
                                         ->options(function (Get $get, ?string $state): array {
                                             $options = Vehicle::query()
-                                                ->where('vehicle_group_id', '!=', 4)
+                                                ->whereNotNull('device_sn')
+                                                ->where('device_sn', '!=', '')
+                                                ->where('status', 'Operational')
                                                 ->orderBy('plate_no')
                                                 ->pluck('plate_no', 'id')
                                                 ->toArray();
-
                                             $departureTime = $get('departure_time');
-
                                             if ($departureTime) {
                                                 $selectedDateTime = Carbon::parse($departureTime);
                                                 $start = $selectedDateTime->copy()->subHour();

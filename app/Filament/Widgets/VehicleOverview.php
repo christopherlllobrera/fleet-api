@@ -2,9 +2,8 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\Vehicle;
 use App\Models\Dispatch;
-use App\Models\CorrectiveWorkOrder;
+use App\Models\Vehicle;
 use Filament\Support\Icons\Heroicon;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
@@ -31,10 +30,15 @@ class VehicleOverview extends BaseWidget
     {
         $totalVehicles = Vehicle::count();
 
-        // Available vehicles: not in dispatch with status 'assigned' or 'en route'
-        $availableVehicles = Vehicle::whereDoesntHave('dispatches', function ($query) {
-            $query->whereIn('status', ['assigned', 'en route']);
-        })->count();
+        // Available vehicles: has device_sn, not en route, and not in corrective work orders
+        $availableVehicles = Vehicle::query()
+            ->whereNotNull('device_sn')
+            ->where('device_sn', '!=', '')
+            ->whereDoesntHave('dispatches', function ($query) {
+                $query->where('status', 'en route');
+            })
+            ->whereDoesntHave('correctiveWorkOrders')
+            ->count();
 
         // En route vehicles: in dispatch with status 'en route'
         $enRouteVehicles = Vehicle::whereHas('dispatches', function ($query) {

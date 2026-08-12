@@ -24,6 +24,12 @@ class VehicleForm
                         Select::make('business_unit_id')
                             ->relationship('business_unit', 'name')
                             ->required(),
+                        Select::make('ownership')
+                            ->options([
+                                'Internal' => 'Internal',
+                                'External' => 'External',
+                            ])
+                            ->required(),
                         TextInput::make('plate_no')
                             ->required()
                             ->maxLength(255),
@@ -34,11 +40,10 @@ class VehicleForm
                             ->maxLength(255),
                         TextInput::make('year')
                             ->maxLength(4),
-                        Select::make('status')
-                            ->options([
-                                'Operational' => 'Operational',
-                                'Non-Operational' => 'Non-Operational',
-                            ]),
+                        TextInput::make('device_sn')
+                            ->label('Device Serial Number')
+                            ->maxLength(255)
+                            ->numeric(),
                     ]),
                 Section::make()
                     ->columnSpan(['lg' => 1])
@@ -52,6 +57,12 @@ class VehicleForm
                             ->required(),
                         Select::make('vehicle_group_id')
                             ->relationship('vehicleGroup', 'name')
+                            ->required(),
+                        Select::make('status')
+                            ->options([
+                                'Operational' => 'Operational',
+                                'Non-Operational' => 'Non-Operational',
+                            ])
                             ->required(),
                     ]),
             ]);

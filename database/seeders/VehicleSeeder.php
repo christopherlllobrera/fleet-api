@@ -10,18 +10,20 @@ class VehicleSeeder extends Seeder
     /**
      * Run the database seeds.
      *
-     * CSV Column Mapping (vehicle_2026.csv):
+     * CSV Column Mapping (vehicle_2026_fixed.csv):
      * [0]  = No. (row number — not stored)
      * [1]  = Charge Account
-     * [2]  = plate_no
-     * [3]  = business_unit_id (Business Unit name)
-     * [4]  = model
-     * [5]  = year
-     * [6]  = maker_id (Maker name)
-     * [7]  = vehicle_category_id (Category name)
-     * [8]  = vehicle_group_id (Group name)
-     * [9]  = status
-     * [10] = vehicle_power_type_id (Power Type name)
+     * [2]  = Ownership
+     * [3]  = plate_no
+     * [4]  = device_sn
+     * [5]  = business_unit_id (Business Unit name)
+     * [6]  = model
+     * [7]  = year
+     * [8]  = maker_id (Maker name)
+     * [9]  = vehicle_category_id (Category name)
+     * [10] = vehicle_group_id (Group name)
+     * [11] = status
+     * [12] = vehicle_power_type_id (Power Type name)
      */
     public function run(): void
     {
@@ -47,7 +49,7 @@ class VehicleSeeder extends Seeder
     private function loadCsv(): array
     {
         $rows = [];
-        $filePath = database_path('seeders/CSV/vehicle_2026.csv');
+        $filePath = database_path('seeders/CSV/vehicle_2026_fixed.csv');
 
         if (! file_exists($filePath)) {
             return [];
@@ -73,14 +75,14 @@ class VehicleSeeder extends Seeder
     }
 
     /**
-     * Seed vehicle_power_types from unique values in CSV column [10].
+     * Seed vehicle_power_types from unique values in CSV column [12].
      *
      * @param  array<int, array<int, string>>  $rows
      */
     private function seedVehiclePowerTypes(array $rows): void
     {
         $powerTypes = collect($rows)
-            ->pluck(10)
+            ->pluck(12)
             ->map(fn (string $value) => strtoupper(trim($value)))
             ->filter()
             ->unique()
@@ -104,14 +106,14 @@ class VehicleSeeder extends Seeder
     }
 
     /**
-     * Seed vehicle_categories from unique values in CSV column [7].
+     * Seed vehicle_categories from unique values in CSV column [9].
      *
      * @param  array<int, array<int, string>>  $rows
      */
     private function seedVehicleCategories(array $rows): void
     {
         $categories = collect($rows)
-            ->pluck(7)
+            ->pluck(9)
             ->map(fn (string $value) => strtoupper(trim($value)))
             ->filter()
             ->unique()
@@ -136,14 +138,14 @@ class VehicleSeeder extends Seeder
     }
 
     /**
-     * Seed vehicle_groups from unique values in CSV column [8].
+     * Seed vehicle_groups from unique values in CSV column [10].
      *
      * @param  array<int, array<int, string>>  $rows
      */
     private function seedVehicleGroups(array $rows): void
     {
         $groups = collect($rows)
-            ->pluck(8)
+            ->pluck(10)
             ->map(fn (string $value) => strtoupper(trim($value)))
             ->filter()
             ->unique()
@@ -186,7 +188,7 @@ class VehicleSeeder extends Seeder
     }
 
     /**
-     * Seed makers from unique values in CSV column [6].
+     * Seed makers from unique values in CSV column [8].
      *
      * @param  array<int, array<int, string>>  $rows
      */
@@ -213,7 +215,7 @@ class VehicleSeeder extends Seeder
         ];
 
         $makers = collect($rows)
-            ->pluck(6)
+            ->pluck(8)
             ->map(fn (string $value) => $this->normalizeMaker($value))
             ->filter()
             ->unique()
@@ -268,31 +270,38 @@ class VehicleSeeder extends Seeder
 
         foreach ($rows as $row) {
             $caName = trim($row[1] ?? '');
-            $buName = trim($row[3] ?? '');
+            $buName = trim($row[5] ?? '');
 
             $chargeAccountId = $chargeAccounts[$caName] ?? null;
             $buId = $businessUnits[$buName] ?? null;
 
-            $makerKey = $this->normalizeMaker(trim($row[6] ?? ''));
-            $categoryKey = strtoupper(trim($row[7] ?? ''));
-            $groupKey = strtoupper(trim($row[8] ?? ''));
-            $powerTypeKey = strtoupper(trim($row[10] ?? ''));
+            $makerKey = $this->normalizeMaker(trim($row[8] ?? ''));
+            $categoryKey = strtoupper(trim($row[9] ?? ''));
+            $groupKey = strtoupper(trim($row[10] ?? ''));
+            $powerTypeKey = strtoupper(trim($row[12] ?? ''));
 
-            $year = trim($row[5] ?? '');
+            $year = trim($row[7] ?? '');
             $year = ($year === '' || $year === '0') ? null : $year;
 
-            $status = trim($row[9] ?? '');
+            $status = trim($row[11] ?? '');
             $status = $status === '' ? 'Unknown' : $status;
+
+            $ownership = trim($row[2] ?? '');
+            $ownership = $ownership === '' ? null : $ownership;
+
+            $deviceSn = trim($row[4] ?? '');
+            $deviceSn = $deviceSn === '' ? null : $deviceSn;
 
             $inserts[] = [
                 'charge_account_id' => $chargeAccountId,
                 'company_id' => null,
                 'business_unit_id' => $buId,
-                'plate_no' => trim($row[2] ?? ''),
-                'device_sn' => null,
+                'ownership' => $ownership,
+                'plate_no' => trim($row[3] ?? ''),
+                'device_sn' => $deviceSn,
                 'init_odo' => null,
                 'maker_id' => $makers[$makerKey] ?? null,
-                'model' => trim($row[4] ?? ''),
+                'model' => trim($row[6] ?? ''),
                 'year' => $year,
                 'status' => $status,
                 'vehicle_category_id' => $categories[$categoryKey] ?? null,
