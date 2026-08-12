@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('charge_account_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('company_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('business_unit_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->string('ownership')->nullable();
             $table->string('plate_no')->nullable();
             $table->string('device_sn')->nullable();
             $table->string('init_odo')->nullable();

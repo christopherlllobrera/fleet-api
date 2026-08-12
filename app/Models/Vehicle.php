@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
     'company_id',
     'charge_account_id',
     'business_unit_id',
+    'ownership',
+    'device_sn',
     'plate_no',
     'maker_id',
     'vehicle_category_id',

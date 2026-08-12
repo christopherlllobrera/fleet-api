@@ -10,15 +10,15 @@ class ChargeAccountSeeder extends Seeder
     /**
      * Run the database seeds.
      *
-     * CSV Column Mapping (vehicle_2026.csv):
+     * CSV Column Mapping (vehicle_2026_fixed.csv):
      * [1] = Charge Account (e.g. 26-0104)
-     * [3] = Business Unit Name (e.g. MIESCOR - PM of Company Vehicle)
+     * [5] = Business Unit Name (e.g. MIESCOR - PM of Company Vehicle)
      */
     public function run(): void
     {
         DB::disableQueryLog();
 
-        $path = database_path('seeders/CSV/vehicle_2026.csv');
+        $path = database_path('seeders/CSV/vehicle_2026_fixed.csv');
         if (! file_exists($path)) {
             return;
         }
@@ -37,7 +37,7 @@ class ChargeAccountSeeder extends Seeder
                 return mb_check_encoding($val, 'UTF-8') ? $val : mb_convert_encoding($val, 'UTF-8', 'Windows-1252');
             }, $row);
             $chargeAccount = $row[1] ?? '';
-            $buName = $row[3] ?? '';
+            $buName = $row[5] ?? '';
 
             if ($chargeAccount !== '' && $buName !== '') {
                 $key = $chargeAccount.'|'.$buName;

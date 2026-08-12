@@ -34,7 +34,11 @@
                             _initialized = true;
                             const waitForInit = () => {
                                 if (typeof window.initFleetTracking === 'function') {
-                                    _destroy = window.initFleetTracking($el, '{{ route('fleet.live-positions') }}');
+                                    _destroy = window.initFleetTracking($el, '{{ route('fleet.live-positions') }}', {
+                                        tileUrl: {{ \Illuminate\Support\Js::from(config('filament-pinpoint.leaflet.tile_url')) }},
+                                        tileUrlDark: {{ \Illuminate\Support\Js::from(config('filament-pinpoint.leaflet.tile_url_dark')) }},
+                                        tileAttribution: {{ \Illuminate\Support\Js::from(config('filament-pinpoint.leaflet.tile_attribution')) }}
+                                    });
                                 } else {
                                     setTimeout(waitForInit, 100);
                                 }
@@ -47,7 +51,7 @@
                 <div class="hidden absolute bottom-5 left-5 z-[500] lg:flex flex-wrap items-center justify-start gap-3 rounded-2xl border border-gray-200 bg-white/95 backdrop-blur-sm px-4 py-3 text-xs text-gray-700 shadow-md dark:border-gray-800 dark:bg-gray-900/95 dark:text-gray-300">
                     <div class="flex items-center gap-2"><span class="h-2.5 w-2.5 shrink-0 rounded-full bg-green-500"></span>Moving</div>
                     <div class="flex items-center gap-2"><span class="h-2.5 w-2.5 shrink-0 rounded-full bg-gray-500"></span>Stationary</div>
-                    <div class="flex items-center gap-2"><span class="h-2.5 w-2.5 shrink-0 rounded-full bg-red-600"></span>GPS stale</div>
+                    <div class="flex items-center gap-2"><span class="h-2.5 w-2.5 shrink-0 rounded-full bg-red-600"></span>Offline</div>
                 </div>
             </div>
         </div>
@@ -70,7 +74,7 @@
         .vehicle-marker svg { width: 18px; height: 18px; }
         .vehicle-marker.moving { color: #16a34a; }
         .vehicle-marker.stationary { color: #6b7280; }
-        .vehicle-marker.stale { color: #dc2626; opacity: 0.6; }
+        .vehicle-marker.offline { color: #dc2626; opacity: 0.6; }
         .vehicle-marker.is-selected { box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.35), 0 1px 3px rgba(0, 0, 0, 0.35); }
 
         .dark .vehicle-marker { background: #111827; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6); }
