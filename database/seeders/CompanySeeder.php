@@ -12,22 +12,22 @@ class CompanySeeder extends Seeder
      */
     public function run(): void
     {
-        if (DB::table('companies')->where('id', 1)->doesntExist()) {
-            DB::table('companies')->insert([
-                'id' => 1,
-                'name' => 'MIESCOR',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        }
+        DB::table('companies')->where('name', 'MIESCOR Logistics Inc.')->update(['name' => 'MIESCOR Logistic Inc.']);
 
-        if (DB::table('companies')->where('id', 2)->doesntExist()) {
-            DB::table('companies')->insert([
-                'id' => 2,
-                'name' => 'Meralco',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+        $companies = [
+            'Meralco',
+            'MIESCOR',
+            'MIESCOR Logistic Inc.',
+        ];
+
+        foreach ($companies as $name) {
+            DB::table('companies')->updateOrInsert(
+                ['name' => $name],
+                [
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]
+            );
         }
     }
 }

@@ -1,43 +1,45 @@
 <x-filament-panels::page>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         {{-- Route Information --}}
-        <div class="bg-white dark:bg-gray-900 rounded-xl shadow p-4 space-y-2">
-            <h3 class="text-lg font-medium mb-3">Route Information</h3>
-            <hr class="my-6 w-full border-gray-200 dark:border-gray-700" />
+        <x-filament::section>
+            <x-slot name="heading">
+                Route Information
+            </x-slot>
+
             <div class="space-y-4">
                 <div class="flex justify-between items-center">
                     <div class="flex items-center text-gray-500 dark:text-gray-400 shrink-0">
-                        <x-filament::icon icon="heroicon-o-ticket" class="h-5 w-5 mr-2 text-info-600" />
+                        <x-filament::icon icon="heroicon-o-ticket" class="h-5 w-5 mr-2 text-gray-400 dark:text-gray-500" />
                         <span>Ticket No.:</span>
                     </div>
-                    <span class="font-medium text-right ml-4">{{ $this->getTicketNo() }}</span>
+                    <span class="font-normal text-right ml-4">{{ $this->getTicketNo() }}</span>
                 </div>
                 
                 <div class="flex justify-between items-start">
                     <div class="flex items-center text-gray-500 dark:text-gray-400 shrink-0">
-                        <x-filament::icon icon="heroicon-o-map-pin" class="h-5 w-5 mr-2 text-info-600" />
+                        <x-filament::icon icon="heroicon-o-map-pin" class="h-5 w-5 mr-2 text-gray-400 dark:text-gray-500" />
                         <span>From:</span>
                     </div>
-                    <span class="font-medium text-right ml-4">{{ $this->getFromLocation() }}</span>
+                    <span class="font-normal text-right ml-4">{{ $this->getFromLocation() }}</span>
                 </div>
                 <div class="flex justify-between items-start">
                     <div class="flex items-center text-gray-500 dark:text-gray-400 shrink-0">
-                        <x-filament::icon icon="heroicon-o-map-pin" class="h-5 w-5 mr-2 text-info-600" />
+                        <x-filament::icon icon="heroicon-o-map-pin" class="h-5 w-5 mr-2 text-gray-400 dark:text-gray-500" />
                         <span>To:</span>
                     </div>
-                    <span class="font-medium text-right ml-4">{{ $this->getToLocation() }}</span>
+                    <span class="font-normal text-right ml-4">{{ $this->getToLocation() }}</span>
                 </div>
                 <div class="flex justify-between items-center">
                     <div class="flex items-center text-gray-500 dark:text-gray-400 shrink-0">
-                        <x-filament::icon icon="heroicon-o-clock" class="h-5 w-5 mr-2 text-info-600" />
+                        <x-filament::icon icon="heroicon-o-clock" class="h-5 w-5 mr-2 text-gray-400 dark:text-gray-500" />
                         <span>Departure:</span>
                     </div>
-                    <span class="font-medium text-right ml-4">{{ $this->getDepartureTime() }}</span>
+                    <span class="font-normal text-right ml-4">{{ $this->getDepartureTime() }}</span>
                 </div>
 
                 <div class="flex justify-between items-center">
                     <div class="flex items-center text-gray-500 dark:text-gray-400 shrink-0">
-                        <x-filament::icon icon="heroicon-o-information-circle" class="h-5 w-5 mr-2 text-info-600" />
+                        <x-filament::icon icon="heroicon-o-information-circle" class="h-5 w-5 mr-2 text-gray-400 dark:text-gray-500" />
                         <span>Status:</span>
                     </div>
                     <x-filament::badge :color="$this->getStatusColor()">
@@ -47,7 +49,7 @@
 
                 <div class="flex justify-between items-center">
                     <div class="flex items-center text-gray-500 dark:text-gray-400 shrink-0">
-                        <x-filament::icon icon="heroicon-o-play" class="h-5 w-5 mr-2 text-info-600" />
+                        <x-filament::icon icon="heroicon-o-play" class="h-5 w-5 mr-2 text-gray-400 dark:text-gray-500" />
                         <span>En Route:</span>
                     </div>
                     <x-filament::badge color="info">
@@ -57,7 +59,7 @@
 
                 <div class="flex justify-between items-center">
                     <div class="flex items-center text-gray-500 dark:text-gray-400 shrink-0">
-                        <x-filament::icon icon="heroicon-o-check-circle" class="h-5 w-5 mr-2 text-info-600" />
+                        <x-filament::icon icon="heroicon-o-check-circle" class="h-5 w-5 mr-2 text-gray-400 dark:text-gray-500" />
                         <span>Completed:</span>
                     </div>
                     <x-filament::badge color="success">
@@ -65,51 +67,52 @@
                     </x-filament::badge>
                 </div>
             </div>
-        </div>
+        </x-filament::section>
 
         {{-- Trip Information --}}
-        <div class="bg-white dark:bg-gray-900 rounded-xl shadow p-4 space-y-2">
-            <h3 class="text-lg font-medium mb-3">Trip Information</h3>
-            <hr class="my-6 w-full border-gray-200 dark:border-gray-700" />
+        <x-filament::section>
+            <x-slot name="heading">
+                Trip Information
+            </x-slot>
 
             <div class="space-y-4">
                 <div class="flex justify-between items-center">
                     <div class="flex items-center text-gray-500 dark:text-gray-400 shrink-0">
-                        <x-filament::icon icon="heroicon-o-user" class="h-5 w-5 mr-2 text-info-600" />
+                        <x-filament::icon icon="heroicon-o-user" class="h-5 w-5 mr-2 text-gray-400 dark:text-gray-500" />
                         <span>Driver:</span>
                     </div>
-                    <span class="font-medium text-right ml-4">{{ $this->getDriverName() }}</span>
+                    <span class="font-normal text-right ml-4">{{ $this->getDriverName() }}</span>
                 </div>
                 
                 <div class="flex justify-between items-center">
                     <div class="flex items-center text-gray-500 dark:text-gray-400 shrink-0">
-                        <x-filament::icon icon="heroicon-o-phone" class="h-5 w-5 mr-2 text-info-600" />
+                        <x-filament::icon icon="heroicon-o-phone" class="h-5 w-5 mr-2 text-gray-400 dark:text-gray-500" />
                         <span>Contact Number:</span>
                     </div>
-                    <span class="font-medium text-right ml-4">{{ $this->getContactNumber() }}</span>
+                    <span class="font-normal text-right ml-4">{{ $this->getContactNumber() }}</span>
                 </div>
                 
                 <hr class="my-6 w-full border-gray-200 dark:border-gray-700" />
 
                 <div class="flex justify-between items-center">
                     <div class="flex items-center text-gray-500 dark:text-gray-400 shrink-0">
-                        <x-filament::icon icon="heroicon-o-truck" class="h-5 w-5 mr-2 text-info-600" />
+                        <x-filament::icon icon="heroicon-o-truck" class="h-5 w-5 mr-2 text-gray-400 dark:text-gray-500" />
                         <span>Plate Number:</span>
                     </div>
-                    <span class="font-medium text-right ml-4">{{ $this->getPlateNumber() }}</span>
+                    <span class="font-normal text-right ml-4">{{ $this->getPlateNumber() }}</span>
                 </div>
 
                 <div class="flex justify-between items-center">
                     <div class="flex items-center text-gray-500 dark:text-gray-400 shrink-0">
                         <span>Model:</span>
                     </div>
-                    <span class="font-medium text-right ml-4">{{ $this->getVehicleModel() }}</span>
+                    <span class="font-normal text-right ml-4">{{ $this->getVehicleModel() }}</span>
                 </div>
 
                 {{-- Cancellation --}}
                 @if($this->getCancellationRecord())
                     <div class="mt-4">
-                        <div class="flex items-center text-red-600 font-medium mb-2">
+                        <div class="flex items-center text-red-600 font-normal mb-2">
                             <x-filament::icon icon="heroicon-o-x-circle" class="h-5 w-5 mr-2" />
                             <span>Cancellation Reason:</span>
                         </div>
@@ -119,21 +122,27 @@
                     </div>
                 @endif
             </div>
-        </div>
+        </x-filament::section>
     </div>
 
 
     {{-- Map UI --}}
-    <div class="bg-white rounded-xl shadow sticky top-5">
+    <x-filament::section class="sticky top-5 ">
+        <x-slot name="heading">
+            Route Map
+        </x-slot>
+
         <div id="map" wire:ignore class="w-full h-[500px] rounded-xl"></div>
-    </div>
+    </x-filament::section>
 
     {{-- Toll Points --}}
     @php $tollPoints = $this->getTollPoints(); @endphp
     @if(count($tollPoints) > 0)
-        <div class="mt-6 bg-white dark:bg-gray-900 rounded-xl shadow p-4">
-            <h3 class="text-lg font-medium mb-3">Toll Points</h3>
-            <hr class="my-4 w-full border-gray-200 dark:border-gray-700" />
+        <x-filament::section class="mt-6">
+            <x-slot name="heading">
+                Toll Points
+            </x-slot>
+
             <div class="overflow-x-auto">
                 <table class="w-full text-sm">
                     <thead>
@@ -150,15 +159,15 @@
                                 data-lat="{{ $point['coordinates'][0] ?? '' }}"
                                 data-lng="{{ $point['coordinates'][1] ?? '' }}">
                                 <td class="py-2 px-3">{{ $index + 1 }}</td>
-                                <td class="py-2 px-3 font-medium">{{ $point['name'] ?? '' }}</td>
+                                <td class="py-2 px-3 font-normal">{{ $point['name'] ?? '' }}</td>
                                 <td class="py-2 px-3">{{ $point['highway'] ?? '' }}</td>
-                                <td class="py-2 px-3 text-right font-medium">₱ {{ number_format($point['fee'] ?? 0, 2) }}</td>
+                                <td class="py-2 px-3 text-right font-normal">₱ {{ number_format($point['fee'] ?? 0, 2) }}</td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
             </div>
-        </div>
+        </x-filament::section>
     @endif
 </x-filament-panels::page>
 
@@ -414,43 +423,29 @@
 
         let errorCount = 0;
 
-        if (darkMode) {
-            window.currentTileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-                maxZoom: 19,
-                subdomains: 'abcd'
-            }).addTo(map);
+        const tileUrl = darkMode 
+            ? "{{ config('filament-pinpoint.leaflet.tile_url_dark') ?: config('filament-pinpoint.leaflet.tile_url', 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png') }}"
+            : "{{ config('filament-pinpoint.leaflet.tile_url', 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png') }}";
+        
+        const attribution = "{!! addslashes(config('filament-pinpoint.leaflet.tile_attribution', '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors, &copy; <a href=\"https://carto.com/attributions\">CARTO</a>')) !!}";
 
-            window.currentTileLayer.on('tileerror', function() {
-                errorCount++;
-                if (errorCount > 5) {
-                    console.log('CartoDB Dark Matter failing, switching to fallback');
-                    map.removeLayer(window.currentTileLayer);
-                    window.currentTileLayer = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
-                        attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
-                        maxZoom: 20
-                    }).addTo(map);
-                }
-            });
-        } else {
-            window.currentTileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-                maxZoom: 19,
-                subdomains: 'abcd'
-            }).addTo(map);
+        window.currentTileLayer = L.tileLayer(tileUrl, {
+            attribution: attribution,
+            maxZoom: 19,
+            subdomains: 'abcd'
+        }).addTo(map);
 
-            window.currentTileLayer.on('tileerror', function() {
-                errorCount++;
-                if (errorCount > 5) {
-                    console.log('CartoDB Light All failing, switching to OpenStreetMap fallback');
-                    map.removeLayer(window.currentTileLayer);
-                    window.currentTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                        maxZoom: 19
-                    }).addTo(map);
-                }
-            });
-        }
+        window.currentTileLayer.on('tileerror', function() {
+            errorCount++;
+            if (errorCount > 5) {
+                console.log('Main tile provider failing, switching to OpenStreetMap fallback');
+                map.removeLayer(window.currentTileLayer);
+                window.currentTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                    maxZoom: 19
+                }).addTo(map);
+            }
+        });
 
         return window.currentTileLayer;
     }
@@ -679,7 +674,7 @@
                                 }).addTo(tollMarkers);
 
                                 marker.bindPopup(`
-                                    <div class="font-medium">${point.name}</div>
+                                    <div class="font-normal">${point.name}</div>
                                     <div>${point.highway}</div>
                                     <div class="font-bold mt-1">Fee: ₱${point.fee.toFixed(2)}</div>
                                 `);

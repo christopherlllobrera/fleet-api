@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use App\Models\Department;
-use App\Models\Position;
 use App\Models\Employee;
+use App\Models\Position;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -16,307 +16,192 @@ class EmployeeSeeder extends Seeder
      */
     public function run(): void
     {
-        // Seed Users
-        $usersData = [
+        $defaultPassword = Hash::make('1024fleetMLI');
+
+        // 1. Ensure user_id = 1 (Admin User) exists and is set up properly
+        $adminUser = User::updateOrCreate(
+            ['id' => 1],
             [
                 'name' => 'John Christopher L. Llobrera',
                 'email' => 'jclllobrera@miescor.ph',
-            ],
-            [
-                'name' => 'Maria Garcia Lopez',
-                'email' => 'maria.lopez@miescor.ph',
-            ],
-            [
-                'name' => 'Carlos Reyes Martinez',
-                'email' => 'carlos.martinez@miescor.ph',
-            ],
-            [
-                'name' => 'Angela Cruz Fernandez',
-                'email' => 'angela.fernandez@miescor.ph',
-            ],
-            [
-                'name' => 'Robert Aquino Villanueva',
-                'email' => 'robert.villanueva@miescor.ph',
-            ],
-            [
-                'name' => 'Rosa Navarro Santos',
-                'email' => 'rosa.santos@miescor.ph',
-            ],
-            [
-                'name' => 'Miguel Punzalan Ocampo',
-                'email' => 'miguel.ocampo@miescor.ph',
-            ],
-            [
-                'name' => 'Isabella Romero Gonzales',
-                'email' => 'isabella.gonzales@miescor.ph',
-            ],
-            [
-                'name' => 'Daniel Castillo Diaz',
-                'email' => 'daniel.diaz@miescor.ph',
-            ],
-            [
-                'name' => 'Patricia Soriano Ramos',
-                'email' => 'patricia.ramos@miescor.ph',
-            ],
-        ];
-
-        $createdUsers = [];
-        $defaultPassword = Hash::make('1024fleetMLI');
-
-        foreach ($usersData as $userData) {
-            $createdUsers[] = User::create([
-                'name' => $userData['name'],
-                'email' => $userData['email'],
-                'password' => $defaultPassword,
+                'password' => 'password101',
                 'email_verified_at' => now(),
-            ]);
-        }
+            ]
+        );
 
-        // Seed Departments
-        $departments = [
-            [
-                'department_no' => 'DEPT001',
-                'department_description' => 'Operations and Management',
-            ],
-            [
-                'department_no' => 'DEPT002',
-                'department_description' => 'Logistics and Fleet Coordination',
-            ],
-            [
-                'department_no' => 'DEPT003',
-                'department_description' => 'Driver and Vehicle Management',
-            ],
-            [
-                'department_no' => 'DEPT004',
-                'department_description' => 'Finance and Administration',
-            ],
+        // Seed Departments (Ensure defaults exist)
+        $departmentsData = [
+            'CORP_ICT' => 'Corporate ICT',
+            'FINANCE' => 'Finance',
+            'TRANS_TWE' => 'Transport and TWE Services',
+            'MLI_MER_TRANS' => 'MLI Meralco Transport',
+            'MOTORPOOL' => 'Motorpool',
         ];
 
         $createdDepartments = [];
-        foreach ($departments as $dept) {
-            $createdDepartments[] = Department::create($dept);
+        foreach ($departmentsData as $code => $desc) {
+            $createdDepartments[$code] = Department::firstOrCreate(
+                ['department_no' => $code],
+                ['department_description' => $desc]
+            );
         }
 
-        // Seed Positions
-        $positions = [
+        // Seed Admin Position
+        $adminPosition = Position::firstOrCreate(
+            ['position_no' => 'POS001'],
             [
-                'position_no' => 'POS001',
                 'position_description' => 'Senior Operations Manager',
-                'department_id' => $createdDepartments[0]->id,
-            ],
-            [
-                'position_no' => 'POS002',
-                'position_description' => 'Fleet Coordinator',
-                'department_id' => $createdDepartments[1]->id,
-            ],
-            [
-                'position_no' => 'POS003',
-                'position_description' => 'Professional Driver',
-                'department_id' => $createdDepartments[2]->id,
-            ],
-            [
-                'position_no' => 'POS004',
-                'position_description' => 'Administrative Assistant',
-                'department_id' => $createdDepartments[3]->id,
-            ],
-            [
-                'position_no' => 'POS005',
-                'position_description' => 'Logistics Officer',
-                'department_id' => $createdDepartments[1]->id,
-            ],
-            [
-                'position_no' => 'POS006',
-                'position_description' => 'Data Analyst',
-                'department_id' => $createdDepartments[0]->id,
-            ],
-            [
-                'position_no' => 'POS007',
-                'position_description' => 'Human Resources Officer',
-                'department_id' => $createdDepartments[3]->id,
-            ],
-        ];
+                'department_id' => $createdDepartments['CORP_ICT']->id,
+            ]
+        );
 
-        $createdPositions = [];
-        foreach ($positions as $pos) {
-            $createdPositions[] = Position::create($pos);
-        }
-
-        // Seed Employees
-        $employees = [
+        // Ensure Admin Employee exists
+        Employee::firstOrCreate(
+            ['user_id' => $adminUser->id],
             [
-                'user_id' => $createdUsers[0]->id,
                 'employee_no' => 'EMP001',
                 'first_name' => 'John Christopher',
                 'middle_name' => 'L.',
                 'last_name' => 'Llobrera',
-                'email' => 'John Christopher L. Llobrera',
+                'email' => 'jclllobrera@miescor.ph',
                 'company_id' => 1,
-                'department_id' => $createdDepartments[0]->id,
-                'position_id' => $createdPositions[0]->id,
+                'department_id' => $createdDepartments['CORP_ICT']->id,
+                'position_id' => $adminPosition->id,
                 'date_hired' => '2022-01-15',
                 'regularization_date' => '2022-04-15',
                 'is_active' => true,
                 'data_privacy_consent' => true,
                 'remarks' => 'Senior Operations Manager',
                 'status' => 'active',
-            ],
-            [
-                'user_id' => $createdUsers[1]->id,
-                'employee_no' => 'EMP002',
-                'first_name' => 'Maria',
-                'middle_name' => 'Garcia',
-                'last_name' => 'Lopez',
-                'email' => 'maria.lopez@miescor.ph',
-                'company_id' => 1,
-                'department_id' => $createdDepartments[1]->id,
-                'position_id' => $createdPositions[1]->id,
-                'date_hired' => '2022-03-20',
-                'regularization_date' => '2022-06-20',
-                'is_active' => true,
-                'data_privacy_consent' => true,
-                'remarks' => 'Fleet Coordinator',
-                'status' => 'active',
-            ],
-            [
-                'user_id' => $createdUsers[2]->id,
-                'employee_no' => 'EMP003',
-                'first_name' => 'Carlos',
-                'middle_name' => 'Reyes',
-                'last_name' => 'Martinez',
-                'email' => 'carlos.martinez@miescor.ph',
-                'company_id' => 1,
-                'department_id' => $createdDepartments[2]->id,
-                'position_id' => $createdPositions[2]->id,
-                'date_hired' => '2021-06-10',
-                'regularization_date' => '2021-09-10',
-                'is_active' => true,
-                'data_privacy_consent' => true,
-                'remarks' => 'Professional Driver',
-                'status' => 'active',
-            ],
-            [
-                'user_id' => $createdUsers[3]->id,
-                'employee_no' => 'EMP004',
-                'first_name' => 'Angela',
-                'middle_name' => 'Cruz',
-                'last_name' => 'Fernandez',
-                'email' => 'angela.fernandez@miescor.ph',
-                'company_id' => 1,
-                'department_id' => $createdDepartments[1]->id,
-                'position_id' => $createdPositions[4]->id,
-                'date_hired' => '2022-05-01',
-                'regularization_date' => '2022-08-01',
-                'is_active' => true,
-                'data_privacy_consent' => true,
-                'remarks' => 'Logistics Officer',
-                'status' => 'active',
-            ],
-            [
-                'user_id' => $createdUsers[4]->id,
-                'employee_no' => 'EMP005',
-                'first_name' => 'Robert',
-                'middle_name' => 'Aquino',
-                'last_name' => 'Villanueva',
-                'email' => 'robert.villanueva@miescor.ph',
-                'company_id' => 1,
-                'department_id' => $createdDepartments[2]->id,
-                'position_id' => $createdPositions[2]->id,
-                'date_hired' => '2021-09-15',
-                'regularization_date' => '2021-12-15',
-                'is_active' => true,
-                'data_privacy_consent' => true,
-                'remarks' => 'Professional Driver',
-                'status' => 'active',
-            ],
-            [
-                'user_id' => $createdUsers[5]->id,
-                'employee_no' => 'EMP006',
-                'first_name' => 'Rosa',
-                'middle_name' => 'Navarro',
-                'last_name' => 'Santos',
-                'email' => 'rosa.santos@miescor.ph',
-                'company_id' => 1,
-                'department_id' => $createdDepartments[3]->id,
-                'position_id' => $createdPositions[3]->id,
-                'date_hired' => '2023-01-10',
-                'regularization_date' => '2023-04-10',
-                'is_active' => true,
-                'data_privacy_consent' => true,
-                'remarks' => 'Administrative Assistant',
-                'status' => 'active',
-            ],
-            [
-                'user_id' => $createdUsers[6]->id,
-                'employee_no' => 'EMP007',
-                'first_name' => 'Miguel',
-                'middle_name' => 'Punzalan',
-                'last_name' => 'Ocampo',
-                'email' => 'miguel.ocampo@miescor.ph',
-                'company_id' => 1,
-                'department_id' => $createdDepartments[1]->id,
-                'position_id' => $createdPositions[1]->id,
-                'date_hired' => '2022-07-20',
-                'regularization_date' => '2022-10-20',
-                'is_active' => false,
-                'data_privacy_consent' => true,
-                'remarks' => 'On leave',
-                'status' => 'inactive',
-            ],
-            [
-                'user_id' => $createdUsers[7]->id,
-                'employee_no' => 'EMP008',
-                'first_name' => 'Isabella',
-                'middle_name' => 'Romero',
-                'last_name' => 'Gonzales',
-                'email' => 'isabella.gonzales@miescor.ph',
-                'company_id' => 1,
-                'department_id' => $createdDepartments[0]->id,
-                'position_id' => $createdPositions[5]->id,
-                'date_hired' => '2023-02-14',
-                'regularization_date' => '2023-05-14',
-                'is_active' => true,
-                'data_privacy_consent' => true,
-                'remarks' => 'Data Analyst',
-                'status' => 'active',
-            ],
-            [
-                'user_id' => $createdUsers[8]->id,
-                'employee_no' => 'EMP009',
-                'first_name' => 'Daniel',
-                'middle_name' => 'Castillo',
-                'last_name' => 'Diaz',
-                'email' => 'daniel.diaz@miescor.ph',
-                'company_id' => 1,
-                'department_id' => $createdDepartments[2]->id,
-                'position_id' => $createdPositions[2]->id,
-                'date_hired' => '2022-04-05',
-                'regularization_date' => '2022-07-05',
-                'is_active' => true,
-                'data_privacy_consent' => true,
-                'remarks' => 'Professional Driver',
-                'status' => 'active',
-            ],
-            [
-                'user_id' => $createdUsers[9]->id,
-                'employee_no' => 'EMP010',
-                'first_name' => 'Patricia',
-                'middle_name' => 'Soriano',
-                'last_name' => 'Ramos',
-                'email' => 'patricia.ramos@miescor.ph',
-                'company_id' => 1,
-                'department_id' => $createdDepartments[3]->id,
-                'position_id' => $createdPositions[6]->id,
-                'date_hired' => '2023-03-01',
-                'regularization_date' => null,
-                'is_active' => true,
-                'data_privacy_consent' => false,
-                'remarks' => 'Probationary',
-                'status' => 'active',
-            ],
-        ];
+            ]
+        );
 
-        foreach ($employees as $employee) {
-            Employee::create($employee);
+        // 2. Parse CSV and seed other employees
+        $csvPath = database_path('seeders/CSV/FleetUsers.csv');
+        $csvEmployees = [];
+        $csvDrivers = [];
+
+        if (file_exists($csvPath)) {
+            $file = fopen($csvPath, 'r');
+            $isDriverSection = false;
+
+            while (($row = fgetcsv($file)) !== false) {
+                if (empty($row) || ! isset($row[0]) || trim($row[0]) === '') {
+                    continue;
+                }
+
+                if (trim($row[0]) === 'PERNR') {
+                    if (isset($row[2]) && trim($row[2]) === 'Position') {
+                        $isDriverSection = true;
+                    }
+
+                    continue;
+                }
+
+                if (! $isDriverSection) {
+                    $csvEmployees[] = [
+                        'pernr' => trim($row[0]),
+                        'name' => trim($row[1]),
+                        'job_title' => trim($row[2]),
+                        'email' => (empty($row[3]) || trim($row[3]) === 'N/A') ? null : trim($row[3]),
+                        'roles' => isset($row[4]) ? trim($row[4]) : null,
+                    ];
+                } else {
+                    $csvDrivers[] = [
+                        'pernr' => trim($row[0]),
+                        'name' => trim($row[1]),
+                        'position' => trim($row[2]),
+                    ];
+                }
+            }
+            fclose($file);
+        }
+
+        // Helper to create employee from CSV data
+        $createEmployeeFromCsv = function (array $data, string $positionDesc, string $deptCode) use ($createdDepartments, $defaultPassword) {
+            $name = $data['name'];
+            $parts = explode(' ', $name);
+            if (count($parts) > 1) {
+                $lastName = array_pop($parts);
+                $firstName = implode(' ', $parts);
+                $middleName = '';
+            } else {
+                $firstName = $name;
+                $lastName = '';
+                $middleName = '';
+            }
+
+            $email = ! empty($data['email']) ? $data['email'] : null;
+
+            // Find or create user only if employee has an email
+            $user = null;
+            if ($email) {
+                $user = User::firstOrCreate(
+                    ['email' => $email],
+                    [
+                        'name' => $name,
+                        'password' => $defaultPassword,
+                        'email_verified_at' => now(),
+                    ]
+                );
+            }
+
+            // Find or create position
+            $position = Position::firstOrCreate(
+                ['position_description' => $positionDesc],
+                [
+                    'position_no' => 'POS_'.strtoupper(substr(str_replace(' ', '_', $positionDesc), 0, 10)).'_'.rand(100, 999),
+                    'department_id' => $createdDepartments[$deptCode]->id,
+                ]
+            );
+
+            // Find or create employee
+            Employee::firstOrCreate(
+                ['employee_no' => $data['pernr']],
+                [
+                    'user_id' => $user?->id,
+                    'first_name' => $firstName,
+                    'middle_name' => $middleName,
+                    'last_name' => $lastName,
+                    'email' => $email,
+                    'company_id' => 3,
+                    'department_id' => $createdDepartments[$deptCode]->id,
+                    'position_id' => $position->id,
+                    'date_hired' => now()->subYears(2)->format('Y-m-d'),
+                    'regularization_date' => now()->subYears(2)->addMonths(6)->format('Y-m-d'),
+                    'is_active' => true,
+                    'data_privacy_consent' => true,
+                    'remarks' => $positionDesc,
+                    'status' => 'active',
+                ]
+            );
+        };
+
+        // Create standard employees
+        foreach ($csvEmployees as $emp) {
+            $deptCode = 'MOTORPOOL'; // Default
+            $jobTitle = strtoupper($emp['job_title']);
+            if (str_contains($jobTitle, 'FINANCE')) {
+                $deptCode = 'FINANCE';
+            } elseif (str_contains($jobTitle, 'ICT') || str_contains($jobTitle, 'IT')) {
+                $deptCode = 'CORP_ICT';
+            } elseif (str_contains($jobTitle, 'MERALCO')) {
+                $deptCode = 'MLI_MER_TRANS';
+            } elseif (str_contains($jobTitle, 'TRANSPORT') || str_contains($jobTitle, 'TWE')) {
+                $deptCode = 'TRANS_TWE';
+            } elseif (str_contains($jobTitle, 'DISPATCH') || str_contains($jobTitle, 'MOTORPOOL') || str_contains($jobTitle, 'FLEET') || str_contains($jobTitle, 'LEAD')) {
+                $deptCode = 'MOTORPOOL';
+            }
+            $createEmployeeFromCsv($emp, $emp['job_title'], $deptCode);
+        }
+
+        // Create driver employees
+        foreach ($csvDrivers as $drv) {
+            $createEmployeeFromCsv([
+                'pernr' => $drv['pernr'],
+                'name' => $drv['name'],
+                'email' => null,
+            ], 'Driver', 'MOTORPOOL');
         }
 
         // Create related records (addresses, contacts, etc.) for each employee
