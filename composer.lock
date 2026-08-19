@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4a56910f709c067250387a62067c1c08",
+    "content-hash": "2a0c7b98c5f52b0d19a262b10c4114ba",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -2145,6 +2145,69 @@
             "time": "2026-07-10T14:15:38+00:00"
         },
         {
+            "name": "jeffersongoncalves/filament-ace-editor-field",
+            "version": "2.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jeffersongoncalves/filament-ace-editor-field.git",
+                "reference": "4571595b6cde2e5c5c97a800a03d7b2eda89bfac"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jeffersongoncalves/filament-ace-editor-field/zipball/4571595b6cde2e5c5c97a800a03d7b2eda89bfac",
+                "reference": "4571595b6cde2e5c5c97a800a03d7b2eda89bfac",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^5.3",
+                "php": "^8.2|^8.3",
+                "spatie/laravel-package-tools": "^1.14.0"
+            },
+            "require-dev": {
+                "larastan/larastan": "^3.0",
+                "laravel/pint": "^1.21",
+                "orchestra/testbench": "^9.0|^10.0|^11.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "JeffersonGoncalves\\Filament\\AceEditorField\\AceEditorFieldServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "JeffersonGoncalves\\Filament\\AceEditorField\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jefferson Gonçalves",
+                    "email": "gerson.simao.92@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A Laravel Filament v4 field that integrates the Ace code editor into your forms, providing a rich, syntax‑highlighted code editing experience.",
+            "homepage": "https://github.com/jeffersongoncalves/filament-ace-editor-field",
+            "keywords": [
+                "ace-editor",
+                "filament",
+                "filament-ace-editor-field",
+                "jeffersongoncalves",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/jeffersongoncalves/filament-ace-editor-field/issues",
+                "source": "https://github.com/jeffersongoncalves/filament-ace-editor-field/tree/2.0.2"
+            },
+            "time": "2026-08-05T22:43:49+00:00"
+        },
+        {
             "name": "jenssegers/agent",
             "version": "v2.6.4",
             "source": {
@@ -2226,6 +2289,78 @@
                 }
             ],
             "time": "2020-06-13T08:05:20+00:00"
+        },
+        {
+            "name": "joaopaulolndev/filament-edit-env",
+            "version": "v3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/joaopaulolndev/filament-edit-env.git",
+                "reference": "009381be66d7ae1f4e5c425ae41be67894cec433"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/joaopaulolndev/filament-edit-env/zipball/009381be66d7ae1f4e5c425ae41be67894cec433",
+                "reference": "009381be66d7ae1f4e5c425ae41be67894cec433",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "jeffersongoncalves/filament-ace-editor-field": "^2.0",
+                "php": "^8.2",
+                "spatie/laravel-package-tools": "^1.15.0"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.0",
+                "nunomaduro/collision": "^7.9|^8.6",
+                "orchestra/testbench": "^8.0|^9.0|^10.0",
+                "pestphp/pest": "^2.1|^3.4.7",
+                "pestphp/pest-plugin-arch": "^2.0|^3.0",
+                "pestphp/pest-plugin-laravel": "^2.0|^3.1.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Joaopaulolndev\\FilamentEditEnv\\FilamentEditEnvServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Joaopaulolndev\\FilamentEditEnv\\": "src/",
+                    "Joaopaulolndev\\FilamentEditEnv\\Database\\Factories\\": "database/factories/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "João Paulo Leite Nascimento",
+                    "email": "joaopauloln7@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Package to edit env file",
+            "homepage": "https://github.com/joaopaulolndev/filament-edit-env",
+            "keywords": [
+                "filament-edit-env",
+                "joaopaulolndev",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/joaopaulolndev/filament-edit-env/issues",
+                "source": "https://github.com/joaopaulolndev/filament-edit-env"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/joaopaulolndev",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-01-20T13:33:33+00:00"
         },
         {
             "name": "joaopaulolndev/filament-edit-profile",
@@ -5498,22 +5633,22 @@
         },
         {
             "name": "spatie/laravel-activitylog",
-            "version": "5.0.0",
+            "version": "5.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-activitylog.git",
-                "reference": "0e00fe74fd071cc572a045459f6d4c9de33130bd"
+                "reference": "97c9f7e82033b18dc9db25de276f9b71e01449ea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-activitylog/zipball/0e00fe74fd071cc572a045459f6d4c9de33130bd",
-                "reference": "0e00fe74fd071cc572a045459f6d4c9de33130bd",
+                "url": "https://api.github.com/repos/spatie/laravel-activitylog/zipball/97c9f7e82033b18dc9db25de276f9b71e01449ea",
+                "reference": "97c9f7e82033b18dc9db25de276f9b71e01449ea",
                 "shasum": ""
             },
             "require": {
-                "illuminate/config": "^12.0 || ^13.0",
-                "illuminate/database": "^12.0 || ^13.0",
-                "illuminate/support": "^12.0 || ^13.0",
+                "illuminate/config": "^13.0",
+                "illuminate/database": "^13.0",
+                "illuminate/support": "^13.0",
                 "php": "^8.4",
                 "spatie/laravel-package-tools": "^1.6.3"
             },
@@ -5521,8 +5656,8 @@
                 "ext-json": "*",
                 "larastan/larastan": "^3.0",
                 "laravel/pint": "^1.29",
-                "orchestra/testbench": "^10.0 || ^11.0",
-                "pestphp/pest": "^4.0"
+                "orchestra/testbench": "^11.0",
+                "pestphp/pest": "^5.0"
             },
             "type": "library",
             "extra": {
@@ -5565,7 +5700,7 @@
                 }
             ],
             "description": "A very simple activity logger to monitor the users of your website or application",
-            "homepage": "https://github.com/spatie/activitylog",
+            "homepage": "https://github.com/spatie/laravel-activitylog",
             "keywords": [
                 "activity",
                 "laravel",
@@ -5575,7 +5710,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-activitylog/issues",
-                "source": "https://github.com/spatie/laravel-activitylog/tree/5.0.0"
+                "source": "https://github.com/spatie/laravel-activitylog/tree/5.1.0"
             },
             "funding": [
                 {
@@ -5587,7 +5722,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-03-25T10:04:54+00:00"
+            "time": "2026-08-12T12:07:38+00:00"
         },
         {
             "name": "spatie/laravel-package-tools",

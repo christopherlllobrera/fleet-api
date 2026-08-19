@@ -3,6 +3,8 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Pages\FleetDashboard;
+use App\Filament\Widgets\DispatchChart;
+use App\Filament\Widgets\TripOverview;
 use Filament\Actions\Action;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Filament\Auth\MultiFactor\Email\EmailAuthentication;
@@ -17,18 +19,17 @@ use Filament\Support\Assets\Js;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Width;
 use Filament\Support\Facades\FilamentAsset;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
 use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
-
-use App\Filament\Widgets\DispatchChart;
-use App\Filament\Widgets\TripOverview;
 
 class FleetPanelProvider extends PanelProvider
 {
@@ -130,6 +131,10 @@ class FleetPanelProvider extends PanelProvider
                     ->shouldShowAvatarForm()
                     ->shouldShowMultiFactorAuthentication(),
             ])
+            // ->renderHook(
+            //     PanelsRenderHook::SIDEBAR_FOOTER,
+            //     fn (): string => Blade::render("@livewire('edit-env-component')"),
+            // )
             ->userMenuItems([
                 'profile' => Action::make('profile')
                     ->label('Profile')

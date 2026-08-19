@@ -1,0 +1,28 @@
+PERNR,Name,Job Title,Email,Roles
+10017287,MARVIN RIMANDO,DISPATCHER,mgrimando@miescor.ph,"Create dispatch, no Fleet with Incident reporting, edit of trips, access to dashboard"
+10025844,JOHN JERIC BATAC,SUPERVISOR,jjmbatac@miescor.ph,"Create, Edit vehicle, with Incident reporting, Create, edit work order, no Dispatch, access to dashboard"
+10016789,JAPHET GILLEGO,MOTORPOOL LEADMAN,jggillego@miescor.ph,"Create, edit work order, no Dispatch, access to dashboard, with Incident reporting"
+10002950,ROGACIANO JALA,MOTORPOOL SUPERVISOR,rmjala@miescor.ph,"Create, edit work order, no Dispatch, access to dashboard, with Incident reporting"
+10003388,GEMMA LACHICA,TRANSPORT SUPERVISOR,gclachica@miescor.ph,"Create dispatch, no Fleet with Incident reporting, edit of trips, access to dashboard"
+10037809,ANDREA JOHNSON,TECHNICAL STAFF,N/A,N/A
+10003284,CHARLES EBRADA,LEAD MECHANIC,cdebrada@miescor.ph,"Edit work order, no Dispatch, access to dashboard, with Incident reporting"
+10003849,RAMON ADENIC,FLEET HEAD,rtadenic@miescor.ph,"All CRU Access for Fleet and Dispatch, access to dashboard, Add Driver details"
+10021095,Ricardo V. Paguia II,FINANCE HEAD,rvpaguia@miescor.ph,"Display access only, access to dashboard. Viewing for Dispatch list, Workorder list"
+PERNR,Name,Position,,
+10036538,RODIERIC GALON,DRIVER,,
+10003913,RAMIR GARCIA,DRIVER,,
+10032742,ROBERTO SARPAMONES,DRIVER,,
+10003929,ROGELIO MANGIBIN ARANAS,DRIVER,,
+10035351,ART JOHN MARAVILLAS,DRIVER,,
+10003676,ALDEN ASCOTIA,DRIVER,,
+10013168,ROMMEL BORANTES JURADA,DRIVER,,
+10034264,JOEN MENDOZA,DRIVER,,
+10013172,NESTOR LANUZA,DRIVER,,
+10035347,RANDY REFUELA,DRIVER,,
+10003927,TEODORO ALCANTARA,DRIVER,,
+10036144,REY ADVIENTO,DRIVER,,
+10011588,JOHN PAUL ESTEVES,DRIVER,,
+10035010,NOEL PERMITES,DRIVER,,
+10033361,ALLAN MANALANG,DRIVER,,
+10031895,EDUARDO LONGAYAN,DRIVER,,
+10036590,JOVINAR RUBIO,DRIVER,,

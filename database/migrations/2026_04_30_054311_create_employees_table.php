@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('first_name');
             $table->string('middle_name')->nullable();
             $table->string('last_name');
-            $table->string('email')->unique();
+            $table->string('email')->nullable()->unique();
             $table->foreignId('company_id')->nullable()->constrained()->onDelete('set null');
             $table->foreignId('department_id')->nullable()->constrained()->onDelete('set null');
             $table->foreignId('position_id')->nullable()->constrained()->onDelete('set null');
