@@ -4,17 +4,17 @@ namespace App\Filament\Resources\Dispatches\Tables;
 
 use App\Filament\Resources\Dispatches\Actions\FuelAction;
 use App\Filament\Resources\Dispatches\Actions\IncidentAction;
+use App\Filament\Resources\Dispatches\Pages\ViewDispatch;
+use App\Models\Dispatch;
+use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Support\Enums\Size;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Actions\Action;
-use App\Filament\Resources\Dispatches\Pages\ViewDispatch;
-use App\Models\Dispatch;
 
 class DispatchesTable
 {
@@ -104,7 +104,7 @@ class DispatchesTable
                     Action::make('view_dispatch')
                         ->label('View')
                         ->icon('heroicon-o-eye')
-                        ->url(fn (Dispatch $record): string => ViewDispatch::getUrl(['record' => $record])), 
+                        ->url(fn (Dispatch $record): string => ViewDispatch::getUrl(['record' => $record])),
 
                 ]),
 
