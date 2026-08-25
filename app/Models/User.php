@@ -27,7 +27,7 @@ use Spatie\Activitylog\Support\LogOptions;
 // Spatie Permissions
 use Spatie\Permission\Traits\HasRoles;
 
-#[Fillable(['name', 'email', 'password', 'avatar_url', 'is_active'])]
+#[Fillable(['employee_no', 'name', 'email', 'password', 'avatar_url', 'is_active'])]
 #[Hidden(['password', 'remember_token'])]
 
 class User extends Authenticatable implements CanResetPassword, FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, HasAvatar, HasEmailAuthentication

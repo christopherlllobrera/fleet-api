@@ -14,16 +14,17 @@ class UsersTable
     {
         return $table
             ->columns([
-                // TextColumn::make('empNo')
-                //     ->label('Employee Number')
-                //     ->searchable(),
+                TextColumn::make('employee_no')
+                    ->label('Employee No.')
+                    ->searchable(),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('email')
                     ->label('Email address')
                     ->searchable(),
-                TextColumn::make('role_id')
+                TextColumn::make('roles.name')
                     ->label('Role')
+                    ->badge()
                     ->searchable(),
             ])
             ->filters([

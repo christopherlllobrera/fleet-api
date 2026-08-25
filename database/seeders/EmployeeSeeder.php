@@ -22,6 +22,7 @@ class EmployeeSeeder extends Seeder
         $adminUser = User::updateOrCreate(
             ['id' => 1],
             [
+                'employee_no' => 'EMP001',
                 'name' => 'John Christopher L. Llobrera',
                 'email' => 'jclllobrera@miescor.ph',
                 'password' => 'password101',
@@ -59,7 +60,7 @@ class EmployeeSeeder extends Seeder
         Employee::firstOrCreate(
             ['user_id' => $adminUser->id],
             [
-                'employee_no' => 'EMP001',
+                'employee_no' => '10030947',
                 'first_name' => 'John Christopher',
                 'middle_name' => 'L.',
                 'last_name' => 'Llobrera',
@@ -136,9 +137,10 @@ class EmployeeSeeder extends Seeder
             // Find or create user only if employee has an email
             $user = null;
             if ($email) {
-                $user = User::firstOrCreate(
+                $user = User::updateOrCreate(
                     ['email' => $email],
                     [
+                        'employee_no' => $data['pernr'],
                         'name' => $name,
                         'password' => $defaultPassword,
                         'email_verified_at' => now(),

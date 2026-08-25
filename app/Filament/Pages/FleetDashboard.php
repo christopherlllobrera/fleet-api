@@ -46,7 +46,7 @@ class FleetDashboard extends Dashboard
                                 'Unassigned' => 'Unassigned',
                                 'Unserved' => 'Unserved',
                                 'Cancelled' => 'Cancelled',
-                                'Completed' => 'Completed', 4,
+                                'Completed' => 'Completed',
                             ])
                             ->multiple()
                             ->searchable(),
