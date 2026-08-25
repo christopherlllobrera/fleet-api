@@ -11,7 +11,7 @@ class WorkOrderCluster extends Cluster
 {
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTicket;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Fleet';
+    protected static string|UnitEnum|null $navigationGroup = 'Fleet';
 
     protected static ?string $slug = 'work-order-management';
 

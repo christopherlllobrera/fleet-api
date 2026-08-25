@@ -8,8 +8,8 @@ use App\Filament\Resources\Dispatches\Pages\ListDispatches;
 use App\Filament\Resources\Dispatches\Pages\ViewDispatch;
 use App\Filament\Resources\Dispatches\Schemas\DispatchForm;
 use App\Filament\Resources\Dispatches\Tables\DispatchesTable;
-use BackedEnum;
 use App\Models\Dispatch;
+use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -20,10 +20,12 @@ class DispatchResource extends Resource
 {
     protected static ?string $model = Dispatch::class;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Fleet';
+    protected static string|UnitEnum|null $navigationGroup = 'Fleet';
 
     protected static ?string $navigationLabel = 'Dispatchings';
+
     protected static ?int $navigationSort = 1;
+
     protected static ?string $breadcrumb = 'Dispatchings';
     // protected static ?string $slug = 'Dispatchings';
 
@@ -33,6 +35,7 @@ class DispatchResource extends Resource
     {
         return static::getModel()::where('status', 'Pending')->count();
     }
+
     public static function getNavigationBadgeTooltip(): ?string
     {
         return 'The number of pending dispatches';
@@ -54,7 +57,7 @@ class DispatchResource extends Resource
             RelationManagers\VehicleEnergyLogsRelationManager::class,
             RelationManagers\TollsRelationManager::class,
             RelationManagers\IncidentsRelationManager::class,
-           
+
         ];
     }
 
@@ -65,6 +68,6 @@ class DispatchResource extends Resource
             'create' => CreateDispatch::route('/create'),
             'edit' => EditDispatch::route('/{record}/edit'),
             'view' => ViewDispatch::route('/{record}/dispatch-view'),
-            ];
+        ];
     }
 }

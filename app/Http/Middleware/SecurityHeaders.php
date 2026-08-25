@@ -56,7 +56,7 @@ class SecurityHeaders
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.bunny.net https://unpkg.com https://cdnjs.cloudflare.com{$viteDev};",
 
             // Fetch / XHR / WebSocket: Livewire polling, Leaflet routing, tile prefetch, Vite HMR
-            "connect-src 'self' blob: https://routing.openstreetmap.de https://unpkg.com https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com{$viteDev};",
+            "connect-src 'self' blob: https://nominatim.openstreetmap.org https://routing.openstreetmap.de https://unpkg.com https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com{$viteDev};",
 
             // Fonts: Google, Bunny, data-URIs for inline icon fonts
             "font-src 'self' data: https://fonts.gstatic.com https://fonts.bunny.net;",

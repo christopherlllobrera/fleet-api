@@ -13,11 +13,11 @@ return new class extends Migration
             $table->foreignId('vehicle_id')->constrained('vehicles');
             $table->string('job_order_no')->nullable();
             $table->date('job_order_date')->nullable();
-            
+
             $table->string('preventive_maintenance_type')->nullable();
             $table->date('job_order_assigned_date')->nullable();
             $table->date('job_order_accomplished_date')->nullable();
-            
+
             // Re-add the foreign key relationships
             $table->foreignId('supervisor_id')->constrained('employees')->onDelete('cascade');
             $table->foreignId('leadman_id')->constrained('employees')->onDelete('cascade');
@@ -43,6 +43,7 @@ return new class extends Migration
             $table->timestamps();
         });
     }
+
     public function down(): void
     {
         Schema::dropIfExists('preventive_work_orders');

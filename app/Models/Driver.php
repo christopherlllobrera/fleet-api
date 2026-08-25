@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
@@ -37,7 +36,7 @@ class Driver extends Model
 
     public function getFullNameAttribute()
     {
-        return $this->employee ? trim($this->employee->first_name . ' ' . $this->employee->last_name) : 'No Name';
+        return $this->employee ? trim($this->employee->first_name.' '.$this->employee->last_name) : 'No Name';
     }
 
     public function getPersonnelNoAttribute()
@@ -50,6 +49,7 @@ class Driver extends Model
         if ($this->employee && $this->employee->contacts->isNotEmpty()) {
             return $this->employee->contacts->first()->value;
         }
+
         return 'N/A';
     }
 }

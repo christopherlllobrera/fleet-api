@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 
 #[Fillable([
     'user_id',
@@ -123,6 +122,7 @@ class Employee extends Model
     {
         return $this->hasMany(EmployeeProfile::class);
     }
+
     public function getFullNameAttribute(): string
     {
         return trim(implode(' ', [$this->first_name, $this->last_name]));
@@ -132,5 +132,4 @@ class Employee extends Model
     {
         return $this->hasMany(WorkOrder::class);
     }
-
 }

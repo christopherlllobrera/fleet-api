@@ -3,9 +3,9 @@
 namespace App\Filament\Clusters\WorkOrder\CorrectiveWorkOrders\Pages;
 
 use App\Filament\Clusters\WorkOrder\CorrectiveWorkOrders\CorrectiveWorkOrderResource;
+use App\Filament\Pages\Widgets\CorrectiveWorkOrderOverview;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
-use App\Filament\Pages\Widgets\CorrectiveWorkOrderOverview;
 
 class ListCorrectiveWorkOrders extends ListRecords
 {
@@ -25,5 +25,4 @@ class ListCorrectiveWorkOrders extends ListRecords
             // CorrectiveWorkOrderOverview::class,
         ];
     }
-
 }

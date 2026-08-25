@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('invoice')->nullable();
             $table->longText('file_attachment')->nullable();
 
-
         });
     }
 

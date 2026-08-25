@@ -2,15 +2,15 @@
 
 namespace App\Filament\Clusters\WorkOrder\CorrectiveWorkOrders\Tables;
 
+use App\Filament\Clusters\WorkOrder\CorrectiveWorkOrders\Actions\MaterialUseAction;
+use App\Filament\Clusters\WorkOrder\CorrectiveWorkOrders\Actions\WorkTimeTrackingAction;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Tables\Table;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Actions\ActionGroup;
-use App\Filament\Clusters\WorkOrder\CorrectiveWorkOrders\Actions\MaterialUseAction;
-use App\Filament\Clusters\WorkOrder\CorrectiveWorkOrders\Actions\WorkTimeTrackingAction;
+use Filament\Tables\Table;
 
 class CorrectiveWorkOrdersTable
 {
@@ -45,7 +45,6 @@ class CorrectiveWorkOrdersTable
                     ->label('Contact Person')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: false),
-
 
                 TextColumn::make('vehicle_location')
                     ->label('Vehicle Location')

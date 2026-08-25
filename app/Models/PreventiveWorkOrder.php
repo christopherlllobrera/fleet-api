@@ -3,9 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Vehicles;
-use App\Models\Employee;
-use App\Models\WorkOrder;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
@@ -18,8 +15,7 @@ class PreventiveWorkOrder extends Model
         'job_order_no',
         'job_order_date',
 
-
-        //new columns
+        // new columns
         'type',
         'assignment',
         'UCR_ref_no',
@@ -32,25 +28,25 @@ class PreventiveWorkOrder extends Model
         'job_order_accomplished_date',
         'supervisor_id',
         'leadman_id',
-        'engine_item', //json
-        'steering_item', //json
-        'brake_item', //json
-        'exhaust_item', //json
-        'front_suspension_item', //json
-        'rear_axle_item', //json
-        'clutch_item', //json
-        'transmission_item', //json
-        'propeller_item', //json
-        'tire_item', //json
-        'electrical_item', //json
-        'body_item', //json
-        'pms_tag_format', //boolean
+        'engine_item', // json
+        'steering_item', // json
+        'brake_item', // json
+        'exhaust_item', // json
+        'front_suspension_item', // json
+        'rear_axle_item', // json
+        'clutch_item', // json
+        'transmission_item', // json
+        'propeller_item', // json
+        'tire_item', // json
+        'electrical_item', // json
+        'body_item', // json
+        'pms_tag_format', // boolean
         'pms_next_schedule',
         'odometer_reading',
         'plate_number_id',
         'driver_id',
         'date_of_pms',
-        'pms_tagging'
+        'pms_tagging',
     ];
 
     protected $casts = [
@@ -76,17 +72,15 @@ class PreventiveWorkOrder extends Model
         'file_attachment' => 'array',
     ];
 
-
-    //Activity Logs
+    // Activity Logs
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
             ->useLogName('Preventive Work Order')
-            ->setDescriptionForEvent(fn(string $event) => "Preventive Work Order has been {$event}")
+            ->setDescriptionForEvent(fn (string $event) => "Preventive Work Order has been {$event}")
             ->logAll()
-            ->logOnlyDirty()
-            // ->dontSubmitEmptyLogs()
-            ;
+            ->logOnlyDirty();
+        // ->dontSubmitEmptyLogs()
     }
 
     public function plateNo()
@@ -99,19 +93,18 @@ class PreventiveWorkOrder extends Model
         return $this->belongsTo(Vehicle::class);
     }
 
-     public function employee()
+    public function employee()
     {
         return $this->belongsTo(Employee::class);
     }
-    
+
     public function getFullNameAttribute()
     {
-        return $this->employee ? trim($this->employee->first_name . ' ' . $this->employee->last_name) : 'No Name';
+        return $this->employee ? trim($this->employee->first_name.' '.$this->employee->last_name) : 'No Name';
     }
 
     public function workOrder()
     {
         return $this->hasOne(WorkOrder::class, 'job_order_id', 'job_order_no');
     }
-
 }

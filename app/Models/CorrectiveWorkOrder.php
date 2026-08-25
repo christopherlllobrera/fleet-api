@@ -41,7 +41,7 @@ class CorrectiveWorkOrder extends Model
         'vehicle_date_released', // json
         'status',
 
-        //new columns
+        // new columns
         'type',
         'assignment',
         'UCR_ref_no',
@@ -61,11 +61,10 @@ class CorrectiveWorkOrder extends Model
     {
         return LogOptions::defaults()
             ->useLogName('Corrective Work Order')
-            ->setDescriptionForEvent(fn(string $event) => "Corrective Work Order has been {$event}")
+            ->setDescriptionForEvent(fn (string $event) => "Corrective Work Order has been {$event}")
             ->logAll()
-            ->logOnlyDirty()
-            // ->dontSubmitEmptyLogs()
-            ;
+            ->logOnlyDirty();
+        // ->dontSubmitEmptyLogs()
     }
 
     protected $table = 'corrective_work_order';
@@ -87,7 +86,7 @@ class CorrectiveWorkOrder extends Model
 
     public function getFullNameAttribute()
     {
-        return $this->employee ? trim($this->employee->first_name . ' ' . $this->employee->last_name) : 'No Name';
+        return $this->employee ? trim($this->employee->first_name.' '.$this->employee->last_name) : 'No Name';
     }
 
     public function plateNo()

@@ -6,9 +6,9 @@ use App\Filament\Resources\Incidents\IncidentsResource;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Filament\Resources\RelationManagers\RelationManager;
 
 class IncidentsRelationManager extends RelationManager
 {

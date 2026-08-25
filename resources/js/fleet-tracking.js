@@ -82,6 +82,13 @@ export function initFleetTracking(mapEl, endpoint, options = {}) {
     // previous instance's teardown has run.
     if (mapEl._leaflet_id) {
         mapEl._fleetTeardown?.();
+
+        // If teardown didn't clear it (e.g. identity mismatch after
+        // Livewire morphing), force-clean so L.map() won't throw.
+        if (mapEl._leaflet_id) {
+            delete mapEl._leaflet_id;
+            mapEl.innerHTML = '';
+        }
     }
 
     const lightTile = options.tileUrl || LIGHT_TILE;
@@ -90,19 +97,27 @@ export function initFleetTracking(mapEl, endpoint, options = {}) {
 
     const map = L.map(mapEl, { zoomControl: true }).setView([14.58, 121.03], 11);
 
-    let tileLayer = L.tileLayer(isDark() ? darkTile : lightTile, {
-        attribution: attribution,
-        maxZoom: 19,
-    }).addTo(map);
+    const tileOpts = { attribution, maxZoom: 19, subdomains: 'abcd', detectRetina: true };
+
+    let tileLayer = L.tileLayer(isDark() ? darkTile : lightTile, tileOpts).addTo(map);
+
+    let tileErrorCount = 0;
+    tileLayer.on('tileerror', () => {
+        tileErrorCount++;
+        if (tileErrorCount > 4 && tileLayer) {
+            map.removeLayer(tileLayer);
+            tileLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 19,
+            }).addTo(map);
+        }
+    });
 
     const themeObserver = new MutationObserver(() => {
         const wantUrl = isDark() ? darkTile : lightTile;
         if (tileLayer._url !== wantUrl) {
             map.removeLayer(tileLayer);
-            tileLayer = L.tileLayer(wantUrl, {
-                attribution: attribution,
-                maxZoom: 19,
-            }).addTo(map);
+            tileLayer = L.tileLayer(wantUrl, tileOpts).addTo(map);
         }
     });
     themeObserver.observe(document.documentElement, {
@@ -114,13 +129,16 @@ export function initFleetTracking(mapEl, endpoint, options = {}) {
     // ── AbortController created ONCE at init, only aborted on teardown ──
     let abortController = new AbortController();
 
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-        if (!destroyed) map.invalidateSize();
-    }));
+    const triggerInvalidate = () => {
+        if (!destroyed && map) map.invalidateSize();
+    };
 
-    const resizeObserver = new ResizeObserver(() => {
-        if (!destroyed) map.invalidateSize();
-    });
+    requestAnimationFrame(() => requestAnimationFrame(() => triggerInvalidate()));
+    setTimeout(triggerInvalidate, 100);
+    setTimeout(triggerInvalidate, 300);
+    setTimeout(triggerInvalidate, 600);
+
+    const resizeObserver = new ResizeObserver(() => triggerInvalidate());
     resizeObserver.observe(mapEl);
 
     const markers = {};
@@ -281,13 +299,25 @@ export function initFleetTracking(mapEl, endpoint, options = {}) {
         });
 
         if (!res.ok) {
+            let errorMsg = 'Fleet endpoint returned ' + res.status;
+            try {
+                const errJson = await res.json();
+                if (errJson && errJson.error) {
+                    errorMsg = errJson.error;
+                } else if (errJson && errJson.message) {
+                    errorMsg = errJson.message;
+                }
+            } catch (_) {
+                // Ignore JSON parse errors for non-JSON responses
+            }
+
             if (res.status === 401) {
-                throw new Error('API token expired. Please refresh the page to reauthenticate.');
+                throw new Error('Authentication expired. Please refresh the page.');
             }
-            if (res.status === 502) {
-                throw new Error('Bad Gateway - API key may be invalid or the external service is unavailable.');
+            if (res.status === 502 || res.status === 503) {
+                throw new Error(errorMsg || 'GPS service is temporarily unavailable.');
             }
-            throw new Error('Fleet endpoint returned ' + res.status);
+            throw new Error(errorMsg);
         }
 
         const payload = await res.json();

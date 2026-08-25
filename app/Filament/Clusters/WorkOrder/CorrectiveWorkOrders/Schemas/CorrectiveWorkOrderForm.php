@@ -7,11 +7,9 @@ use App\Models\Employee;
 use App\Models\Vehicle;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Wizard;
@@ -103,21 +101,21 @@ class CorrectiveWorkOrderForm
                                         ->options([
                                             'Pending' => 'Pending',
                                             'In Progress' => 'In Progress',
-                                            
+
                                             'Completed' => 'Completed',
                                             'Cancelled' => 'Cancelled',
                                         ])
                                         ->colors([
                                             'Pending' => 'gray',
                                             'In Progress' => 'info',
-                                          
+
                                             'Completed' => 'success',
                                             'Cancelled' => 'danger',
                                         ])
                                         ->icons([
                                             'Pending' => 'heroicon-o-information-circle',
                                             'In Progress' => 'heroicon-o-wrench-screwdriver',
-                                          
+
                                             'Completed' => 'heroicon-o-check-circle',
                                             'Cancelled' => 'heroicon-o-x-circle',
                                         ])
@@ -196,43 +194,43 @@ class CorrectiveWorkOrderForm
                                 ->icon('heroicon-o-truck')
                                 ->schema([
                                     Select::make('plate_no_id')
-                                    ->label('Vehicle Plate Number')
-                                    ->relationship('plateNo', 'plate_no')
-                                    ->searchable()
-                                    ->preload()
-                                    ->required()
-                                    ->live()
-                                    ->afterStateUpdated(function (callable $set, $state) {
-                                        if (! $state) {
-                                            $set('model', null);
-                                            $set('maker_id', null);
-                                            $set('year', null);
-                                            $set('vehicle_power_type_id', null);
+                                        ->label('Vehicle Plate Number')
+                                        ->relationship('plateNo', 'plate_no')
+                                        ->searchable()
+                                        ->preload()
+                                        ->required()
+                                        ->live()
+                                        ->afterStateUpdated(function (callable $set, $state) {
+                                            if (! $state) {
+                                                $set('model', null);
+                                                $set('maker_id', null);
+                                                $set('year', null);
+                                                $set('vehicle_power_type_id', null);
 
-                                            return;
-                                        }
+                                                return;
+                                            }
 
-                                        $vehicle = Vehicle::with(['maker', 'vehiclePowerType'])->find($state);
-                                        if ($vehicle) {
-                                            $set('model', $vehicle->model);
-                                            $set('maker_id', $vehicle->maker ? $vehicle->maker->name : null);
-                                            $set('year', $vehicle->year);
-                                            $set('vehicle_power_type_id', $vehicle->vehiclePowerType ? $vehicle->vehiclePowerType->name : null);
-                                        }
-                                    })
-                                    ->afterStateHydrated(function (callable $set, $state) {
-                                        if (! $state) {
-                                            return;
-                                        }
+                                            $vehicle = Vehicle::with(['maker', 'vehiclePowerType'])->find($state);
+                                            if ($vehicle) {
+                                                $set('model', $vehicle->model);
+                                                $set('maker_id', $vehicle->maker ? $vehicle->maker->name : null);
+                                                $set('year', $vehicle->year);
+                                                $set('vehicle_power_type_id', $vehicle->vehiclePowerType ? $vehicle->vehiclePowerType->name : null);
+                                            }
+                                        })
+                                        ->afterStateHydrated(function (callable $set, $state) {
+                                            if (! $state) {
+                                                return;
+                                            }
 
-                                        $vehicle = Vehicle::with(['maker', 'vehiclePowerType'])->find($state);
-                                        if ($vehicle) {
-                                            $set('model', $vehicle->model);
-                                            $set('maker_id', $vehicle->maker ? $vehicle->maker->name : null);
-                                            $set('year', $vehicle->year);
-                                            $set('vehicle_power_type_id', $vehicle->vehiclePowerType ? $vehicle->vehiclePowerType->name : null);
-                                        }
-                                    }),
+                                            $vehicle = Vehicle::with(['maker', 'vehiclePowerType'])->find($state);
+                                            if ($vehicle) {
+                                                $set('model', $vehicle->model);
+                                                $set('maker_id', $vehicle->maker ? $vehicle->maker->name : null);
+                                                $set('year', $vehicle->year);
+                                                $set('vehicle_power_type_id', $vehicle->vehiclePowerType ? $vehicle->vehiclePowerType->name : null);
+                                            }
+                                        }),
                                     TextInput::make('model')
                                         ->label('Model')
                                         ->readOnly()
@@ -255,9 +253,9 @@ class CorrectiveWorkOrderForm
                                         ->maxLength(255),
                                     TextInput::make('odometer_reading')
                                         ->label('Odometer Reading (km)')
-                                    ->placeholder('e.g., 25000')
+                                        ->placeholder('e.g., 25000')
                                     // ->extraAttributes()
-                                    ->numeric(),
+                                        ->numeric(),
                                 ])
                                 ->columns([
                                     'default' => 1,
@@ -281,71 +279,71 @@ class CorrectiveWorkOrderForm
                                 ->collapsible()
                                 ->schema([
                                     Select::make('driver_name_id')
-                                    ->label('Driver')
-                                    ->relationship('driverName', 'employee_no')
-                                    ->getOptionLabelFromRecordUsing(fn (Employee $record) => $record->full_name)
-                                    ->searchable(['first_name', 'middle_name', 'last_name'])
-                                    ->preload()
-                                    ->required()
-                                    ->live()
-                                    ->afterStateUpdated(function (callable $set, $state) {
-                                        if (! $state) {
-                                            $set('Personnel No', null);
-                                            $set('driver_contact_no', null);
+                                        ->label('Driver')
+                                        ->relationship('driverName', 'employee_no')
+                                        ->getOptionLabelFromRecordUsing(fn (Employee $record) => $record->full_name)
+                                        ->searchable(['first_name', 'middle_name', 'last_name'])
+                                        ->preload()
+                                        ->required()
+                                        ->live()
+                                        ->afterStateUpdated(function (callable $set, $state) {
+                                            if (! $state) {
+                                                $set('Personnel No', null);
+                                                $set('driver_contact_no', null);
 
-                                            return;
-                                        }
-                                        $employee = Employee::with('contacts')->find($state);
-                                        if ($employee) {
-                                            $set('Personnel No', $employee->employee_no);
-                                            $set('driver_contact_no', $employee->contacts->isNotEmpty() ? $employee->contacts->first()->value : 'N/A');
-                                        }
-                                    })
-                                    ->afterStateHydrated(function (callable $set, $state) {
-                                        if (! $state) {
-                                            return;
-                                        }
-                                        $employee = Employee::with('contacts')->find($state);
-                                        if ($employee) {
-                                            $set('Personnel No', $employee->employee_no);
-                                            $set('driver_contact_no', $employee->contacts->isNotEmpty() ? $employee->contacts->first()->value : 'N/A');
-                                        }
-                                    }),
+                                                return;
+                                            }
+                                            $employee = Employee::with('contacts')->find($state);
+                                            if ($employee) {
+                                                $set('Personnel No', $employee->employee_no);
+                                                $set('driver_contact_no', $employee->contacts->isNotEmpty() ? $employee->contacts->first()->value : 'N/A');
+                                            }
+                                        })
+                                        ->afterStateHydrated(function (callable $set, $state) {
+                                            if (! $state) {
+                                                return;
+                                            }
+                                            $employee = Employee::with('contacts')->find($state);
+                                            if ($employee) {
+                                                $set('Personnel No', $employee->employee_no);
+                                                $set('driver_contact_no', $employee->contacts->isNotEmpty() ? $employee->contacts->first()->value : 'N/A');
+                                            }
+                                        }),
                                     TextInput::make('Personnel No')
-                                    ->label('Driver Employee ID')
-                                    ->readOnly()
-                                    ->dehydrated(false),
+                                        ->label('Driver Employee ID')
+                                        ->readOnly()
+                                        ->dehydrated(false),
                                     TextInput::make('driver_contact_no')
-                                    ->label('Driver Contact No.')
-                                    ->readOnly()
-                                    ->dehydrated(false),
+                                        ->label('Driver Contact No.')
+                                        ->readOnly()
+                                        ->dehydrated(false),
                                     Select::make('requisition_office')
-                                    ->label('Requisition Office')
-                                    ->placeholder('e.g., MLI, MBI, MIESCOR, Individual, Others')
-                                    ->options([
-                                        'MLI' => 'MLI',
-                                        'MBI' => 'MBI',
-                                        'MIESCOR' => 'MIESCOR',
-                                        'Individual' => 'Individual',
-                                        'Others' => 'Others',
-                                    ])
-                                    ->suffixIcon('heroicon-o-building-office-2'),
+                                        ->label('Requisition Office')
+                                        ->placeholder('e.g., MLI, MBI, MIESCOR, Individual, Others')
+                                        ->options([
+                                            'MLI' => 'MLI',
+                                            'MBI' => 'MBI',
+                                            'MIESCOR' => 'MIESCOR',
+                                            'Individual' => 'Individual',
+                                            'Others' => 'Others',
+                                        ])
+                                        ->suffixIcon('heroicon-o-building-office-2'),
                                     Select::make('contact_person_id')
-                                    ->label('Contact Person')
-                                    ->relationship('contactPerson', 'employee_no')
-                                    ->getOptionLabelFromRecordUsing(fn (Employee $record) => $record->full_name)
-                                    ->searchable(['first_name', 'middle_name', 'last_name'])
-                                    ->preload()
-                                    ->required()
-                                    ->live(),
+                                        ->label('Contact Person')
+                                        ->relationship('contactPerson', 'employee_no')
+                                        ->getOptionLabelFromRecordUsing(fn (Employee $record) => $record->full_name)
+                                        ->searchable(['first_name', 'middle_name', 'last_name'])
+                                        ->preload()
+                                        ->required()
+                                        ->live(),
                                     TextInput::make('contact_number')
-                                    ->label('Contact Number')
-                                    ->placeholder('e.g., 09123456789')
-                                    ->prefix('+63')
-                                    ->numeric()
-                                    ->maxLength(255)
-                                    ->suffixIcon('heroicon-o-phone')
-                                    ->dehydrated(false),
+                                        ->label('Contact Number')
+                                        ->placeholder('e.g., 09123456789')
+                                        ->prefix('+63')
+                                        ->numeric()
+                                        ->maxLength(255)
+                                        ->suffixIcon('heroicon-o-phone')
+                                        ->dehydrated(false),
 
                                 ])
                                 ->columns([
@@ -356,13 +354,13 @@ class CorrectiveWorkOrderForm
                                     'xl' => 2,
                                     '2xl' => 2,
                                 ])->columnSpan([
-                                'default' => 1,
-                                'sm' => 2,
-                                'md' => 2,
-                                'lg' => 2,
-                                'xl' => 2,
-                                '2xl' => 2,
-                            ]),
+                                    'default' => 1,
+                                    'sm' => 2,
+                                    'md' => 2,
+                                    'lg' => 2,
+                                    'xl' => 2,
+                                    '2xl' => 2,
+                                ]),
                         ]),
                     Step::make('Problem Assessment')
                         ->icon('heroicon-o-exclamation-triangle')
@@ -373,19 +371,19 @@ class CorrectiveWorkOrderForm
                                 ->collapsible()
                                 ->schema([
                                     Textarea::make('vehicle_trouble_report')
-                                    ->label('Vehicle Trouble Report')
-                                    ->hint('To be filled by the driver')
-                                    ->placeholder('Describe the vehicle problem in detail...')
-                                    ->rows(4)
-                                    ->columnSpanFull()
-                                    ->required(),
+                                        ->label('Vehicle Trouble Report')
+                                        ->hint('To be filled by the driver')
+                                        ->placeholder('Describe the vehicle problem in detail...')
+                                        ->rows(4)
+                                        ->columnSpanFull()
+                                        ->required(),
                                     Textarea::make('initial_assessment')
-                                    ->label('Initial Assessment')
-                                    ->hint('To be filled by the mechanic')
-                                    ->required()
-                                    ->placeholder('Initial diagnosis and recommended actions...')
-                                    ->rows(4)
-                                    ->columnSpanFull(),
+                                        ->label('Initial Assessment')
+                                        ->hint('To be filled by the mechanic')
+                                        ->required()
+                                        ->placeholder('Initial diagnosis and recommended actions...')
+                                        ->rows(4)
+                                        ->columnSpanFull(),
                                 ]),
                         ]),
                 ])
