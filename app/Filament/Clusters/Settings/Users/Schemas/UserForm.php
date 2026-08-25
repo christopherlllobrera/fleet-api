@@ -40,9 +40,9 @@ class UserForm
                             ->password()
                             ->inlineLabel()
                             ->revealable(),
-                        Select::make('role_id')
+                        Select::make('roles')
                             ->label('Role')
-                            ->relationship('role', 'name')
+                            ->relationship('roles', 'name')
                             ->preload()
                             ->searchable()
                             ->required()
