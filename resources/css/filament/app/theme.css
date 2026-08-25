@@ -3,4 +3,30 @@
 @source '../../../../app/Filament/**/*';
 @source '../../../../resources/views/filament/**/*';
 
-@source "../../../../vendor/relaticle/flowforge/resources/views/**/*.blade.php";
+/* --- Leaflet CSS Isolation Overrides --- */
+/* Prevent Tailwind / Filament global img resets and filters from breaking tiles */
+.leaflet-container img,
+.leaflet-container .leaflet-tile,
+.leaflet-container .leaflet-marker-icon,
+.leaflet-container .leaflet-marker-shadow,
+.leaflet-tile-container img {
+    max-width: none !important;
+    max-height: none !important;
+    width: auto;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    filter: none !important;
+    vertical-align: baseline !important;
+}
+
+.leaflet-container {
+    box-sizing: border-box !important;
+}
+
+.leaflet-tile {
+    filter: inherit;
+    visibility: inherit;
+}
+
