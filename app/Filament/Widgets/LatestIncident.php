@@ -2,23 +2,23 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Resources\Incidents\IncidentsResource;
+use App\Models\Incident;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
+use Filament\Tables\Columns\SelectColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Filament\Widgets\TableWidget;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
+use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
-use App\Models\Incident;
-use App\Filament\Resources\Incidents\IncidentsResource;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\SelectColumn;
-use Filament\Actions\Action;
 
 class LatestIncident extends TableWidget
 {
     use InteractsWithPageFilters;
 
-    protected int | string | array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 'full';
 
     protected static ?string $title = 'Latest Incident';
 
@@ -34,6 +34,7 @@ class LatestIncident extends TableWidget
                 $endDate = filled($this->pageFilters['endDate'] ?? null)
                     ? Carbon::parse($this->pageFilters['endDate'])
                     : now();
+
                 return Incident::query()
                     ->when($startDate, fn ($q) => $q->where('created_at', '>=', $startDate))
                     ->when($endDate, fn ($q) => $q->where('created_at', '<=', $endDate));

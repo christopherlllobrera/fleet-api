@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Model;
 
 #[Fillable([
-    'dispatch_id', 
-    'name', 
-    'contact_no', 
+    'dispatch_id',
+    'name',
+    'contact_no',
     'pick_up_location',
     'pick_up_lat',
     'pick_up_lng',

@@ -2,10 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\RequestingOffice;
-
+use Illuminate\Database\Seeder;
 
 class RequestingOfficeSeeder extends Seeder
 {
@@ -152,6 +150,6 @@ class RequestingOfficeSeeder extends Seeder
             );
         }
 
-        $this->command->info('Fleet Requestor Offices seeded: ' . count($offices) . ' records');
+        $this->command->info('Fleet Requestor Offices seeded: '.count($offices).' records');
     }
 }

@@ -4,14 +4,10 @@ namespace App\Filament\Resources\Dispatches\Pages;
 
 use App\Filament\Resources\Dispatches\DispatchResource;
 use Filament\Actions\CreateAction;
+use Filament\Actions\ExportAction;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Schemas\Components\Tabs\Tab;
-
 use Illuminate\Database\Eloquent\Builder;
-use App\Models\Dispatch;
-
-use App\Filament\Resources\Dispatches\Pages\DispatchExporter;
-use Filament\Actions\ExportAction;
 
 class ListDispatches extends ListRecords
 {
@@ -24,7 +20,7 @@ class ListDispatches extends ListRecords
             ExportAction::make()
                 ->label('Export')
                 ->exporter(DispatchExporter::class)
-                ->enableVisibleTableColumnsByDefault()
+                ->enableVisibleTableColumnsByDefault(),
         ];
     }
 

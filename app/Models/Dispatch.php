@@ -4,12 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 
 #[Fillable([
-    'ticket_no', 'request_item','passenger_count','vehicle_id',
+    'ticket_no', 'request_item', 'passenger_count', 'vehicle_id',
     'driver_id', 'requesting_office_id',
-    'from_location', 'from_lat', 'from_lng', 
+    'from_location', 'from_lat', 'from_lng',
     'to_location', 'to_lat', 'to_lng',
     'purpose', 'priority_level',
     'departure_time', 'en_route_time',
@@ -41,6 +40,7 @@ class Dispatch extends Model
     {
         return $this->belongsTo(RequestingOffice::class);
     }
+
     public function passengers()
     {
         return $this->hasMany(Passenger::class);

@@ -7,7 +7,4 @@ use Illuminate\Database\Eloquent\Model;
 
 #[Fillable(['office_name'])]
 
-class RequestingOffice extends Model
-{
-    
-}
+class RequestingOffice extends Model {}

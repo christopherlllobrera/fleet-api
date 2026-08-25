@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\Dispatches\Pages;
 
 use App\Filament\Resources\Dispatches\DispatchResource;
-use Filament\Resources\Pages\CreateRecord;
 use Filament\Notifications\Notification;
+use Filament\Resources\Pages\CreateRecord;
 
 class CreateDispatch extends CreateRecord
 {
@@ -17,6 +17,7 @@ class CreateDispatch extends CreateRecord
             $this->getCancelFormAction(),
         ];
     }
+
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');

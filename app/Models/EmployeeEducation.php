@@ -23,6 +23,7 @@ class EmployeeEducation extends Model
      * Explicit table name to avoid inflection issues.
      */
     protected $table = 'employee_educations';
+
     protected function casts(): array
     {
         return [

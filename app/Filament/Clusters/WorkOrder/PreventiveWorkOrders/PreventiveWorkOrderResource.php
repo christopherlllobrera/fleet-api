@@ -7,20 +7,18 @@ use App\Filament\Clusters\WorkOrder\PreventiveWorkOrders\Pages\EditPreventiveWor
 use App\Filament\Clusters\WorkOrder\PreventiveWorkOrders\Pages\ListPreventiveWorkOrders;
 use App\Filament\Clusters\WorkOrder\PreventiveWorkOrders\Schemas\PreventiveWorkOrderForm;
 use App\Filament\Clusters\WorkOrder\PreventiveWorkOrders\Tables\PreventiveWorkOrdersTable;
+use App\Filament\Clusters\WorkOrder\WorkOrderCluster;
 use App\Models\PreventiveWorkOrder;
-use BackedEnum;
-use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use App\Filament\Clusters\WorkOrder\WorkOrderCluster;
+use UnitEnum;
 
 class PreventiveWorkOrderResource extends Resource
 {
     protected static ?string $model = PreventiveWorkOrder::class;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Work Order';
+    protected static string|UnitEnum|null $navigationGroup = 'Work Order';
 
     protected static ?string $cluster = WorkOrderCluster::class;
 

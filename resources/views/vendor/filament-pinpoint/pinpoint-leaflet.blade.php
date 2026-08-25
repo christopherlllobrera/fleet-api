@@ -10,30 +10,30 @@
 --}}
 <x-dynamic-component :component="$getFieldWrapperView()" :field="$field">
     @php
-        $statePath        = $getStatePath();
-        $defaultLat       = $getDefaultLat();
-        $defaultLng       = $getDefaultLng();
-        $defaultZoom      = $getDefaultZoom();
-        $height           = $getHeight();
-        $isDraggable      = $isDraggable();
-        $isSearchable     = $isSearchable();
-        $latField         = $getLatField();
-        $lngField         = $getLngField();
-        $radiusField      = $getRadiusField();
-        $addressField     = $getAddressField();
+        $statePath         = $getStatePath();
+        $defaultLat        = $getDefaultLat();
+        $defaultLng        = $getDefaultLng();
+        $defaultZoom       = $getDefaultZoom();
+        $height            = $getHeight();
+        $isDraggable       = $isDraggable();
+        $isSearchable      = $isSearchable();
+        $latField          = $getLatField();
+        $lngField          = $getLngField();
+        $radiusField       = $getRadiusField();
+        $addressField      = $getAddressField();
         $shortAddressField = $getShortAddressField();
-        $streetField      = $getStreetField();
+        $streetField       = $getStreetField();
         $streetNumberField = $getStreetNumberField();
-        $provinceField    = $getProvinceField();
-        $villageField     = $getVillageField();
-        $cityField        = $getCityField();
-        $districtField    = $getDistrictField();
-        $postalCodeField  = $getPostalCodeField();
-        $countryField     = $getCountryField();
-        $tileUrl          = $getTileUrl();
-        $tileUrlDark      = $getTileUrlDark();
-        $tileAttribution  = $getTileAttribution();
-        $nominatimUrl     = $getNominatimUrl();
+        $provinceField     = $getProvinceField();
+        $villageField      = $getVillageField();
+        $cityField         = $getCityField();
+        $districtField     = $getDistrictField();
+        $postalCodeField   = $getPostalCodeField();
+        $countryField      = $getCountryField();
+        $tileUrl           = $getTileUrl();
+        $tileUrlDark       = $getTileUrlDark();
+        $tileAttribution   = $getTileAttribution();
+        $nominatimUrl      = $getNominatimUrl();
 
         $state          = $getState();
         $currentLat     = $state['lat'] ?? $defaultLat;
@@ -44,22 +44,17 @@
 
     <div
         wire:ignore
-        x-data="{
-            map: null,
-            marker: null,
-            circle: null,
-            radiusHandle: null,
-            tileLayer: null,
-            lat: parseFloat(@js($currentLat)) || @js($defaultLat),
-            lng: parseFloat(@js($currentLng)) || @js($defaultLng),
-            radius: parseInt(@js($currentRadius)) || 0,
-            address: @js($currentAddress),
+        x-data="filamentPinpointLeaflet({
+            statePath: @js($statePath),
+            currentLat: @js($currentLat),
+            currentLng: @js($currentLng),
+            currentRadius: @js($currentRadius),
+            currentAddress: @js($currentAddress),
             defaultLat: @js($defaultLat),
             defaultLng: @js($defaultLng),
             defaultZoom: @js($defaultZoom),
             isDraggable: @js($isDraggable),
             isSearchable: @js($isSearchable),
-            statePath: @js($statePath),
             latField: @js($latField),
             lngField: @js($lngField),
             radiusField: @js($radiusField),
@@ -76,348 +71,8 @@
             tileUrl: @js($tileUrl),
             tileUrlDark: @js($tileUrlDark),
             tileAttribution: @js($tileAttribution),
-            nominatimUrl: @js($nominatimUrl),
-            isMapLoaded: false,
-
-            // Search state
-            searchResults: [],
-            showDropdown: false,
-            searchTimeout: null,
-            isSearching: false,
-
-            getFieldPath(fieldName) {
-                if (!fieldName) return null;
-                const lastDotIndex = this.statePath.lastIndexOf('.');
-                const basePath = lastDotIndex > -1 ? this.statePath.substring(0, lastDotIndex + 1) : 'data.';
-                return basePath + fieldName;
-            },
-
-            init() {
-                this.loadExistingCoordinates();
-                this.loadLeaflet();
-            },
-
-            loadExistingCoordinates() {
-                const latPath = this.getFieldPath(this.latField);
-                const lngPath = this.getFieldPath(this.lngField);
-                const radiusPath = this.getFieldPath(this.radiusField);
-                const addressPath = this.getFieldPath(this.addressField);
-
-                if (latPath && lngPath) {
-                    const existingLat = $wire.get(latPath);
-                    const existingLng = $wire.get(lngPath);
-                    if (existingLat && existingLng) {
-                        this.lat = parseFloat(existingLat);
-                        this.lng = parseFloat(existingLng);
-                    }
-                }
-                if (radiusPath) {
-                    const existingRadius = $wire.get(radiusPath);
-                    if (existingRadius) this.radius = parseInt(existingRadius);
-                }
-                if (addressPath) {
-                    const existingAddress = $wire.get(addressPath);
-                    if (existingAddress) this.address = existingAddress;
-                }
-            },
-
-            loadLeaflet() {
-                if (window.L) {
-                    this.$nextTick(() => this.initMap());
-                    return;
-                }
-
-                // Register listener — fires once when Leaflet is ready
-                document.addEventListener('pinpoint:leaflet:loaded', () => this.initMap(), { once: true });
-
-                // Only one component actually loads the script
-                if (window.leafletLoading) return;
-                window.leafletLoading = true;
-
-                if (!document.getElementById('leaflet-css')) {
-                    const link = document.createElement('link');
-                    link.id = 'leaflet-css';
-                    link.rel = 'stylesheet';
-                    link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-                    document.head.appendChild(link);
-                }
-
-                const script = document.createElement('script');
-                script.id = 'leaflet-js';
-                script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-                script.onload = () => {
-                    window.leafletLoading = false;
-                    document.dispatchEvent(new CustomEvent('pinpoint:leaflet:loaded'));
-                };
-                document.head.appendChild(script);
-            },
-
-            isDarkMode() {
-                return document.documentElement.classList.contains('dark');
-            },
-
-            initMap() {
-                const mapElement = this.$refs.map;
-                if (!mapElement) return;
-
-                this.map = L.map(mapElement, {
-                    center: [this.lat, this.lng],
-                    zoom: this.defaultZoom,
-                    zoomControl: true,
-                    attributionControl: true,
-                });
-
-                // Use dark tile URL if in dark mode and configured
-                const activeTileUrl = (this.isDarkMode() && this.tileUrlDark)
-                    ? this.tileUrlDark
-                    : this.tileUrl;
-
-                this.tileLayer = L.tileLayer(activeTileUrl, {
-                    attribution: this.tileAttribution,
-                    maxZoom: 19,
-                }).addTo(this.map);
-
-                // Marker
-                this.marker = L.marker([this.lat, this.lng], {
-                    draggable: this.isDraggable,
-                }).addTo(this.map);
-
-                if (this.isDraggable) {
-                    this.marker.on('dragend', (e) => {
-                        const pos = e.target.getLatLng();
-                        this.updatePosition(pos.lat, pos.lng);
-                    });
-                }
-
-                // Map click
-                this.map.on('click', (e) => {
-                    this.marker.setLatLng(e.latlng);
-                    this.updatePosition(e.latlng.lat, e.latlng.lng);
-                });
-
-                // Radius circle
-                if (this.radiusField) {
-                    this.initRadiusCircle();
-                }
-
-                // Search
-                if (this.isSearchable) {
-                    this.initSearch();
-                }
-
-                this.isMapLoaded = true;
-            },
-
-            initRadiusCircle() {
-                const r = this.radius || 500;
-                this.circle = L.circle([this.lat, this.lng], {
-                    radius: r,
-                    color: '#4285F4',
-                    fillColor: '#4285F4',
-                    fillOpacity: 0.2,
-                    weight: 2,
-                }).addTo(this.map);
-
-                // Drag handle on the east edge of the circle
-                const handlePos = this.getCircleEdgeLatLng();
-                this.radiusHandle = L.marker(handlePos, {
-                    draggable: true,
-                    icon: L.divIcon({
-                        className: 'pinpoint-radius-handle',
-                        html: '<div></div>',
-                        iconSize: [14, 14],
-                        iconAnchor: [7, 7],
-                    }),
-                }).addTo(this.map);
-
-                this.radiusHandle.on('drag', (e) => {
-                    const center = L.latLng(this.lat, this.lng);
-                    const newRadius = Math.round(center.distanceTo(e.latlng));
-                    this.radius = newRadius;
-                    this.circle.setRadius(newRadius);
-                    this.updateRadiusState();
-                });
-
-                this.radiusHandle.on('dragend', () => {
-                    // Snap handle back to east edge after drag
-                    this.radiusHandle.setLatLng(this.getCircleEdgeLatLng());
-                });
-            },
-
-            getCircleEdgeLatLng() {
-                // Place handle on the east edge of the circle
-                const r = this.radius || 500;
-                const earthRadius = 6371000;
-                const lat = this.lat * Math.PI / 180;
-                const dLng = (r / earthRadius) / Math.cos(lat);
-                return L.latLng(this.lat, this.lng + (dLng * 180 / Math.PI));
-            },
-
-            initSearch() {
-                // Search is handled via Alpine.js x-on:input — no extra library needed
-            },
-
-            onSearchInput(query) {
-                this.showDropdown = false;
-                clearTimeout(this.searchTimeout);
-
-                if (!query || query.length < 3) {
-                    this.searchResults = [];
-                    return;
-                }
-
-                this.searchTimeout = setTimeout(() => {
-                    this.fetchSearchResults(query);
-                }, 500);
-            },
-
-            async fetchSearchResults(query) {
-                this.isSearching = true;
-                try {
-                    const params = new URLSearchParams({
-                        q: query,
-                        format: 'json',
-                        limit: 5,
-                        addressdetails: 1,
-                        countrycodes: 'ph'
-                    });
-                    const res = await fetch(`${this.nominatimUrl}/search?${params}`, {
-                        headers: { 'Accept-Language': document.documentElement.lang || 'id,en' },
-                    });
-                    const data = await res.json();
-                    this.searchResults = data;
-                    this.showDropdown = data.length > 0;
-                } catch (e) {
-                    console.error('[Pinpoint] Nominatim search error:', e);
-                } finally {
-                    this.isSearching = false;
-                }
-            },
-
-            selectSearchResult(result) {
-                const lat = parseFloat(result.lat);
-                const lng = parseFloat(result.lon);
-
-                this.marker.setLatLng([lat, lng]);
-                this.map.setView([lat, lng], 17);
-                this.address = result.display_name;
-                this.showDropdown = false;
-                this.searchResults = [];
-
-                this.updatePosition(lat, lng);
-            },
-
-            updatePosition(lat, lng) {
-                this.lat = parseFloat(lat.toFixed(7));
-                this.lng = parseFloat(lng.toFixed(7));
-
-                if (this.circle) {
-                    this.circle.setLatLng([this.lat, this.lng]);
-                    this.radiusHandle.setLatLng(this.getCircleEdgeLatLng());
-                }
-
-                const latPath = this.getFieldPath(this.latField);
-                const lngPath = this.getFieldPath(this.lngField);
-                if (latPath) $wire.set(latPath, this.lat);
-                if (lngPath) $wire.set(lngPath, this.lng);
-
-                this.reverseGeocode(lat, lng);
-            },
-
-            updateRadiusState() {
-                const radiusPath = this.getFieldPath(this.radiusField);
-                if (radiusPath) $wire.set(radiusPath, this.radius);
-            },
-
-            async reverseGeocode(lat, lng) {
-                try {
-                    const params = new URLSearchParams({
-                        lat: lat,
-                        lon: lng,
-                        format: 'json',
-                        addressdetails: 1,
-                        zoom: 18,
-                    });
-                    const res = await fetch(`${this.nominatimUrl}/reverse?${params}`, {
-                        headers: { 'Accept-Language': document.documentElement.lang || 'id,en' },
-                    });
-                    const data = await res.json();
-
-                    if (!data || data.error) return;
-
-                    const addr = data.address || {};
-                    const displayName = data.display_name || '';
-
-                    this.address = displayName;
-
-                    const addressPath = this.getFieldPath(this.addressField);
-                    if (addressPath) $wire.set(addressPath, displayName);
-
-                    // Map Nominatim address fields
-                    const street       = addr.road || addr.pedestrian || addr.footway || addr.path || '';
-                    const streetNumber = addr.house_number || '';
-                    const province     = addr.state || addr.province || '';
-                    const city         = addr.city || addr.regency || addr.county || addr.municipality || addr.town || '';
-                    const district     = addr.city_district || addr.district || addr.suburb || addr.borough || '';
-                    const village      = addr.village || addr.neighbourhood || addr.quarter || addr.residential || '';
-                    const postalCode   = addr.postcode || '';
-                    const country      = addr.country || '';
-
-                    let shortAddress = '';
-                    if (street && streetNumber) shortAddress = `${street} ${streetNumber}`;
-                    else if (street) shortAddress = street;
-
-                    const fieldMap = {
-                        shortAddressField: shortAddress || null,
-                        streetField:       street || null,
-                        streetNumberField: streetNumber || null,
-                        provinceField:     province || null,
-                        cityField:         city || null,
-                        districtField:     district || null,
-                        villageField:      village || null,
-                        postalCodeField:   postalCode || null,
-                        countryField:      country || null,
-                    };
-
-                    for (const [field, value] of Object.entries(fieldMap)) {
-                        const path = this.getFieldPath(this[field]);
-                        if (path) $wire.set(path, value);
-                    }
-                } catch (e) {
-                    console.error('[Pinpoint] Nominatim reverse geocode error:', e);
-                }
-            },
-
-            getCurrentLocation() {
-                if (!navigator.geolocation) {
-                    alert('Geolocation is not supported by this browser');
-                    return;
-                }
-
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const lat = position.coords.latitude;
-                        const lng = position.coords.longitude;
-
-                        this.marker.setLatLng([lat, lng]);
-                        this.map.setView([lat, lng], 17);
-
-                        if (this.circle) {
-                            this.circle.setLatLng([lat, lng]);
-                            this.radiusHandle.setLatLng(this.getCircleEdgeLatLng());
-                        }
-
-                        this.updatePosition(lat, lng);
-                    },
-                    (error) => {
-                        console.error('[Pinpoint] Geolocation error:', error);
-                        alert('Failed to get location: ' + error.message);
-                    },
-                    { enableHighAccuracy: true, timeout: 10000 }
-                );
-            },
-        }"
-        x-init="init()"
+            nominatimUrl: @js($nominatimUrl)
+        })"
         class="fi-fo-pinpoint"
     >
         {{-- Search Box --}}
@@ -469,7 +124,7 @@
         @endif
 
         {{-- Map Container --}}
-        <div class="relative rounded-lg border border-gray-300 dark:border-gray-700" style="overflow: clip;">
+        <div :id="containerId" class="relative rounded-lg border border-gray-300 dark:border-gray-700" style="overflow: clip;">
             <div
                 x-ref="map"
                 style="height: {{ $height }}px; width: 100%;"
@@ -520,6 +175,473 @@
             <span>{{ __('filament-pinpoint::pinpoint.use_my_location') }}</span>
         </button>
     </div>
+
+    <script>
+        if (typeof window.filamentPinpointLeafletRegistered === 'undefined') {
+            window.filamentPinpointLeafletRegistered = true;
+
+            const initPinpointLeafletAlpine = () => {
+                if (!window.Alpine) return;
+
+                window.Alpine.data('filamentPinpointLeaflet', (config) => ({
+                    map: null,
+                    marker: null,
+                    circle: null,
+                    radiusHandle: null,
+                    tileLayer: null,
+                    themeObserver: null,
+                    resizeObserver: null,
+                    intersectionObserver: null,
+                    mutationObserver: null,
+                    lat: parseFloat(config.currentLat) || config.defaultLat,
+                    lng: parseFloat(config.currentLng) || config.defaultLng,
+                    radius: parseInt(config.currentRadius) || 0,
+                    address: config.currentAddress || '',
+                    defaultLat: config.defaultLat,
+                    defaultLng: config.defaultLng,
+                    defaultZoom: config.defaultZoom,
+                    isDraggable: config.isDraggable,
+                    isSearchable: config.isSearchable,
+                    statePath: config.statePath,
+                    latField: config.latField,
+                    lngField: config.lngField,
+                    radiusField: config.radiusField,
+                    addressField: config.addressField,
+                    shortAddressField: config.shortAddressField,
+                    streetField: config.streetField,
+                    streetNumberField: config.streetNumberField,
+                    provinceField: config.provinceField,
+                    cityField: config.cityField,
+                    districtField: config.districtField,
+                    postalCodeField: config.postalCodeField,
+                    countryField: config.countryField,
+                    villageField: config.villageField,
+                    tileUrl: config.tileUrl,
+                    tileUrlDark: config.tileUrlDark,
+                    tileAttribution: config.tileAttribution,
+                    nominatimUrl: config.nominatimUrl,
+                    isMapLoaded: false,
+                    containerId: 'pinpoint-map-container-' + Math.random().toString(36).substring(2, 9),
+
+                    searchResults: [],
+                    showDropdown: false,
+                    searchTimeout: null,
+                    isSearching: false,
+
+                    getFieldPath(fieldName) {
+                        if (!fieldName) return null;
+                        const lastDotIndex = this.statePath.lastIndexOf('.');
+                        const basePath = lastDotIndex > -1 ? this.statePath.substring(0, lastDotIndex + 1) : 'data.';
+                        return basePath + fieldName;
+                    },
+
+                    init() {
+                        this.loadExistingCoordinates();
+                        this.loadLeaflet();
+                    },
+
+                    loadExistingCoordinates() {
+                        const latPath = this.getFieldPath(this.latField);
+                        const lngPath = this.getFieldPath(this.lngField);
+                        const radiusPath = this.getFieldPath(this.radiusField);
+                        const addressPath = this.getFieldPath(this.addressField);
+
+                        if (latPath && lngPath) {
+                            const existingLat = this.$wire?.get(latPath);
+                            const existingLng = this.$wire?.get(lngPath);
+                            if (existingLat && existingLng) {
+                                this.lat = parseFloat(existingLat);
+                                this.lng = parseFloat(existingLng);
+                            }
+                        }
+                        if (radiusPath) {
+                            const existingRadius = this.$wire?.get(radiusPath);
+                            if (existingRadius) this.radius = parseInt(existingRadius);
+                        }
+                        if (addressPath) {
+                            const existingAddress = this.$wire?.get(addressPath);
+                            if (existingAddress) this.address = existingAddress;
+                        }
+                    },
+
+                    loadLeaflet() {
+                        if (window.L) {
+                            this.$nextTick(() => this.initMap());
+                            return;
+                        }
+
+                        document.addEventListener('pinpoint:leaflet:loaded', () => this.initMap(), { once: true });
+
+                        if (window.leafletLoading) return;
+                        window.leafletLoading = true;
+
+                        if (!document.getElementById('leaflet-css')) {
+                            const link = document.createElement('link');
+                            link.id = 'leaflet-css';
+                            link.rel = 'stylesheet';
+                            link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+                            document.head.appendChild(link);
+                        }
+
+                        const script = document.createElement('script');
+                        script.id = 'leaflet-js';
+                        script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+                        script.onload = () => {
+                            window.leafletLoading = false;
+                            document.dispatchEvent(new CustomEvent('pinpoint:leaflet:loaded'));
+                        };
+                        document.head.appendChild(script);
+                    },
+
+                    isDarkMode() {
+                        return document.documentElement.classList.contains('dark');
+                    },
+
+                    initMap() {
+                        const mapElement = this.$refs.map;
+                        const containerElement = document.getElementById(this.containerId);
+                        if (!mapElement || !containerElement) return;
+
+                        if (mapElement._leaflet_id) {
+                            this.map?.remove();
+                            this.map = null;
+                        }
+
+                        this.map = L.map(mapElement, {
+                            center: [this.lat, this.lng],
+                            zoom: this.defaultZoom,
+                            zoomControl: true,
+                            attributionControl: true,
+                        });
+
+                        const activeTileUrl = (this.isDarkMode() && this.tileUrlDark)
+                            ? this.tileUrlDark
+                            : this.tileUrl;
+
+                        const tileOpts = {
+                            attribution: this.tileAttribution,
+                            maxZoom: 19,
+                            subdomains: 'abcd',
+                            detectRetina: true,
+                        };
+
+                        this.tileLayer = L.tileLayer(activeTileUrl, tileOpts).addTo(this.map);
+
+                        let tileErrorCount = 0;
+                        this.tileLayer.on('tileerror', () => {
+                            tileErrorCount++;
+                            if (tileErrorCount > 4 && this.tileLayer) {
+                                this.map.removeLayer(this.tileLayer);
+                                this.tileLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                                    maxZoom: 19,
+                                }).addTo(this.map);
+                            }
+                        });
+
+                        this.themeObserver = new MutationObserver(() => {
+                            const wantUrl = (this.isDarkMode() && this.tileUrlDark) ? this.tileUrlDark : this.tileUrl;
+                            if (this.tileLayer && this.tileLayer._url !== wantUrl) {
+                                this.map.removeLayer(this.tileLayer);
+                                this.tileLayer = L.tileLayer(wantUrl, tileOpts).addTo(this.map);
+                            }
+                        });
+                        this.themeObserver.observe(document.documentElement, {
+                            attributes: true,
+                            attributeFilter: ['class'],
+                        });
+
+                        this.marker = L.marker([this.lat, this.lng], {
+                            draggable: this.isDraggable,
+                        }).addTo(this.map);
+
+                        if (this.isDraggable) {
+                            this.marker.on('dragend', (e) => {
+                                const pos = e.target.getLatLng();
+                                this.updatePosition(pos.lat, pos.lng);
+                            });
+                        }
+
+                        this.map.on('click', (e) => {
+                            this.marker.setLatLng(e.latlng);
+                            this.updatePosition(e.latlng.lat, e.latlng.lng);
+                        });
+
+                        if (this.radiusField) {
+                            this.initRadiusCircle();
+                        }
+
+                        if (this.isSearchable) {
+                            this.initSearch();
+                        }
+
+                        this.isMapLoaded = true;
+
+                        const triggerInvalidate = () => {
+                            if (this.map) {
+                                this.map.invalidateSize();
+                            }
+                        };
+
+                        this.$nextTick(() => triggerInvalidate());
+                        requestAnimationFrame(() => {
+                            triggerInvalidate();
+                            requestAnimationFrame(() => triggerInvalidate());
+                        });
+                        setTimeout(triggerInvalidate, 100);
+                        setTimeout(triggerInvalidate, 250);
+                        setTimeout(triggerInvalidate, 500);
+                        setTimeout(triggerInvalidate, 1000);
+
+                        window.addEventListener('resize', triggerInvalidate);
+
+                        if (window.ResizeObserver) {
+                            this.resizeObserver = new ResizeObserver(() => triggerInvalidate());
+                            this.resizeObserver.observe(mapElement);
+                            this.resizeObserver.observe(containerElement);
+                        }
+
+                        if (window.IntersectionObserver) {
+                            this.intersectionObserver = new IntersectionObserver((entries) => {
+                                entries.forEach(entry => {
+                                    if (entry.isIntersecting) {
+                                        triggerInvalidate();
+                                        setTimeout(triggerInvalidate, 150);
+                                    }
+                                });
+                            });
+                            this.intersectionObserver.observe(mapElement);
+                            this.intersectionObserver.observe(containerElement);
+                        }
+
+                        if (window.MutationObserver) {
+                            this.mutationObserver = new MutationObserver(() => triggerInvalidate());
+                            const parentToObserve = containerElement.closest('.fi-wizard-step, .fi-tabs-panel, .fi-modal, [x-data], [x-show]') || containerElement.parentElement;
+                            if (parentToObserve) {
+                                this.mutationObserver.observe(parentToObserve, {
+                                    attributes: true,
+                                    attributeFilter: ['class', 'style', 'aria-hidden', 'hidden']
+                                });
+                            }
+                        }
+
+                        document.addEventListener('filament-wizard::step-changed', () => setTimeout(triggerInvalidate, 100));
+                        document.addEventListener('tab-changed', () => setTimeout(triggerInvalidate, 100));
+                        document.addEventListener('open-modal', () => setTimeout(triggerInvalidate, 100));
+                    },
+
+                    initRadiusCircle() {
+                        const r = this.radius || 500;
+                        this.circle = L.circle([this.lat, this.lng], {
+                            radius: r,
+                            color: '#4285F4',
+                            fillColor: '#4285F4',
+                            fillOpacity: 0.2,
+                            weight: 2,
+                        }).addTo(this.map);
+
+                        const handlePos = this.getCircleEdgeLatLng();
+                        this.radiusHandle = L.marker(handlePos, {
+                            draggable: true,
+                            icon: L.divIcon({
+                                className: 'pinpoint-radius-handle',
+                                html: '<div></div>',
+                                iconSize: [14, 14],
+                                iconAnchor: [7, 7],
+                            }),
+                        }).addTo(this.map);
+
+                        this.radiusHandle.on('drag', (e) => {
+                            const center = L.latLng(this.lat, this.lng);
+                            const newRadius = Math.round(center.distanceTo(e.latlng));
+                            this.radius = newRadius;
+                            this.circle.setRadius(newRadius);
+                            this.updateRadiusState();
+                        });
+
+                        this.radiusHandle.on('dragend', () => {
+                            this.radiusHandle.setLatLng(this.getCircleEdgeLatLng());
+                        });
+                    },
+
+                    getCircleEdgeLatLng() {
+                        const r = this.radius || 500;
+                        const earthRadius = 6371000;
+                        const lat = this.lat * Math.PI / 180;
+                        const dLng = (r / earthRadius) / Math.cos(lat);
+                        return L.latLng(this.lat, this.lng + (dLng * 180 / Math.PI));
+                    },
+
+                    initSearch() {},
+
+                    onSearchInput(query) {
+                        this.showDropdown = false;
+                        clearTimeout(this.searchTimeout);
+
+                        if (!query || query.length < 3) {
+                            this.searchResults = [];
+                            return;
+                        }
+
+                        this.searchTimeout = setTimeout(() => {
+                            this.fetchSearchResults(query);
+                        }, 500);
+                    },
+
+                    async fetchSearchResults(query) {
+                        this.isSearching = true;
+                        try {
+                            const params = new URLSearchParams({
+                                q: query,
+                                format: 'json',
+                                limit: 5,
+                                addressdetails: 1,
+                                countrycodes: 'ph'
+                            });
+                            const res = await fetch(`${this.nominatimUrl}/search?${params}`, {
+                                headers: { 'Accept-Language': document.documentElement.lang || 'id,en' },
+                            });
+                            const data = await res.json();
+                            this.searchResults = data;
+                            this.showDropdown = data.length > 0;
+                        } catch (e) {
+                            console.error('[Pinpoint] Nominatim search error:', e);
+                        } finally {
+                            this.isSearching = false;
+                        }
+                    },
+
+                    selectSearchResult(result) {
+                        const lat = parseFloat(result.lat);
+                        const lng = parseFloat(result.lon);
+
+                        this.marker.setLatLng([lat, lng]);
+                        this.map.setView([lat, lng], 17);
+                        this.address = result.display_name;
+                        this.showDropdown = false;
+                        this.searchResults = [];
+
+                        this.updatePosition(lat, lng);
+                    },
+
+                    updatePosition(lat, lng) {
+                        this.lat = parseFloat(lat.toFixed(7));
+                        this.lng = parseFloat(lng.toFixed(7));
+
+                        if (this.circle) {
+                            this.circle.setLatLng([this.lat, this.lng]);
+                            this.radiusHandle.setLatLng(this.getCircleEdgeLatLng());
+                        }
+
+                        const latPath = this.getFieldPath(this.latField);
+                        const lngPath = this.getFieldPath(this.lngField);
+                        if (latPath) this.$wire?.set(latPath, this.lat);
+                        if (lngPath) this.$wire?.set(lngPath, this.lng);
+
+                        this.reverseGeocode(lat, lng);
+                    },
+
+                    updateRadiusState() {
+                        const radiusPath = this.getFieldPath(this.radiusField);
+                        if (radiusPath) this.$wire?.set(radiusPath, this.radius);
+                    },
+
+                    async reverseGeocode(lat, lng) {
+                        try {
+                            const params = new URLSearchParams({
+                                lat: lat,
+                                lon: lng,
+                                format: 'json',
+                                addressdetails: 1,
+                                zoom: 18,
+                            });
+                            const res = await fetch(`${this.nominatimUrl}/reverse?${params}`, {
+                                headers: { 'Accept-Language': document.documentElement.lang || 'id,en' },
+                            });
+                            const data = await res.json();
+
+                            if (!data || data.error) return;
+
+                            const addr = data.address || {};
+                            const displayName = data.display_name || '';
+
+                            this.address = displayName;
+
+                            const addressPath = this.getFieldPath(this.addressField);
+                            if (addressPath) this.$wire?.set(addressPath, displayName);
+
+                            const street       = addr.road || addr.pedestrian || addr.footway || addr.path || '';
+                            const streetNumber = addr.house_number || '';
+                            const province     = addr.state || addr.province || '';
+                            const city         = addr.city || addr.regency || addr.county || addr.municipality || addr.town || '';
+                            const district     = addr.city_district || addr.district || addr.suburb || addr.borough || '';
+                            const village      = addr.village || addr.neighbourhood || addr.quarter || addr.residential || '';
+                            const postalCode   = addr.postcode || '';
+                            const country      = addr.country || '';
+
+                            let shortAddress = '';
+                            if (street && streetNumber) shortAddress = `${street} ${streetNumber}`;
+                            else if (street) shortAddress = street;
+
+                            const fieldMap = {
+                                shortAddressField: shortAddress || null,
+                                streetField:       street || null,
+                                streetNumberField: streetNumber || null,
+                                provinceField:     province || null,
+                                cityField:         city || null,
+                                districtField:     district || null,
+                                villageField:      village || null,
+                                postalCodeField:   postalCode || null,
+                                countryField:      country || null,
+                            };
+
+                            for (const [field, value] of Object.entries(fieldMap)) {
+                                const path = this.getFieldPath(this[field]);
+                                if (path) this.$wire?.set(path, value);
+                            }
+                        } catch (e) {
+                            console.error('[Pinpoint] Nominatim reverse geocode error:', e);
+                        }
+                    },
+
+                    getCurrentLocation() {
+                        if (!navigator.geolocation) {
+                            alert('Geolocation is not supported by this browser');
+                            return;
+                        }
+
+                        navigator.geolocation.getCurrentPosition(
+                            (position) => {
+                                const lat = position.coords.latitude;
+                                const lng = position.coords.longitude;
+
+                                this.marker.setLatLng([lat, lng]);
+                                this.map.setView([lat, lng], 17);
+
+                                if (this.circle) {
+                                    this.circle.setLatLng([lat, lng]);
+                                    this.radiusHandle.setLatLng(this.getCircleEdgeLatLng());
+                                }
+
+                                this.updatePosition(lat, lng);
+                            },
+                            (error) => {
+                                console.error('[Pinpoint] Geolocation error:', error);
+                                alert('Failed to get location: ' + error.message);
+                            },
+                            { enableHighAccuracy: true, timeout: 10000 }
+                        );
+                    },
+                }));
+            };
+
+            if (window.Alpine) {
+                initPinpointLeafletAlpine();
+            } else {
+                document.addEventListener('alpine:init', initPinpointLeafletAlpine, { once: true });
+            }
+        }
+    </script>
 
     <style>
         @keyframes spin {

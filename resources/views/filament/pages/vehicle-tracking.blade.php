@@ -28,6 +28,7 @@
                 <div
                     id="map"
                     class="h-full w-full bg-gray-50 dark:bg-gray-950 z-0"
+                    wire:ignore
                     x-data="{ _destroy: null, _initialized: false }"
                     x-init="
                         if (!_initialized) {

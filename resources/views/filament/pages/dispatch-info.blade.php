@@ -424,23 +424,24 @@
         let errorCount = 0;
 
         const tileUrl = darkMode 
-            ? "{{ config('filament-pinpoint.leaflet.tile_url_dark') ?: config('filament-pinpoint.leaflet.tile_url', 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png') }}"
-            : "{{ config('filament-pinpoint.leaflet.tile_url', 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png') }}";
+            ? "{{ config('filament-pinpoint.leaflet.tile_url_dark') ?: config('filament-pinpoint.leaflet.tile_url', 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png') }}"
+            : "{{ config('filament-pinpoint.leaflet.tile_url', 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png') }}";
         
         const attribution = "{!! addslashes(config('filament-pinpoint.leaflet.tile_attribution', '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors, &copy; <a href=\"https://carto.com/attributions\">CARTO</a>')) !!}";
 
         window.currentTileLayer = L.tileLayer(tileUrl, {
             attribution: attribution,
             maxZoom: 19,
-            subdomains: 'abcd'
+            subdomains: 'abcd',
+            detectRetina: true,
         }).addTo(map);
 
         window.currentTileLayer.on('tileerror', function() {
             errorCount++;
-            if (errorCount > 5) {
+            if (errorCount > 4) {
                 console.log('Main tile provider failing, switching to OpenStreetMap fallback');
                 map.removeLayer(window.currentTileLayer);
-                window.currentTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                window.currentTileLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                     maxZoom: 19
                 }).addTo(map);

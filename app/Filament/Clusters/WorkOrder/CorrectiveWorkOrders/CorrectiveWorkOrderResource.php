@@ -7,20 +7,18 @@ use App\Filament\Clusters\WorkOrder\CorrectiveWorkOrders\Pages\EditCorrectiveWor
 use App\Filament\Clusters\WorkOrder\CorrectiveWorkOrders\Pages\ListCorrectiveWorkOrders;
 use App\Filament\Clusters\WorkOrder\CorrectiveWorkOrders\Schemas\CorrectiveWorkOrderForm;
 use App\Filament\Clusters\WorkOrder\CorrectiveWorkOrders\Tables\CorrectiveWorkOrdersTable;
+use App\Filament\Clusters\WorkOrder\WorkOrderCluster;
 use App\Models\CorrectiveWorkOrder;
-use BackedEnum;
-use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use App\Filament\Clusters\WorkOrder\WorkOrderCluster;
+use UnitEnum;
 
 class CorrectiveWorkOrderResource extends Resource
 {
     protected static ?string $model = CorrectiveWorkOrder::class;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Work Order';
+    protected static string|UnitEnum|null $navigationGroup = 'Work Order';
 
     protected static ?string $cluster = WorkOrderCluster::class;
 

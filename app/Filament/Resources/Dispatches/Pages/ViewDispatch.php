@@ -7,14 +7,15 @@ use App\Models\Dispatch;
 use Carbon\Carbon;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
-use Filament\Support\Icons\Heroicon;
 
 class ViewDispatch extends Page
 {
     use InteractsWithRecord;
 
     protected static string $resource = DispatchResource::class;
+
     protected string $view = 'filament.pages.dispatch-info';
+
     protected static string $routePath = 'dispatch-view';
 
     public function mount(int|string $record): void
@@ -106,10 +107,11 @@ class ViewDispatch extends Page
         if ($minutes >= 60) {
             $hours = intdiv($minutes, 60);
             $mins = $minutes % 60;
-            return $hours . ' h ' . $mins . ' min';
+
+            return $hours.' h '.$mins.' min';
         }
 
-        return $minutes . ' min';
+        return $minutes.' min';
     }
 
     public function getHaversineDistance(): string
@@ -134,7 +136,7 @@ class ViewDispatch extends Page
         $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
         $distance = $earthRadius * $c;
 
-        return number_format($distance, 2) . ' km';
+        return number_format($distance, 2).' km';
     }
 
     public function getFromCoordinates(): ?array
@@ -154,7 +156,7 @@ class ViewDispatch extends Page
 
         return null;
     }
-    
+
     // ──────────────────────────────────────────────
     // Dispatch Information Helpers
     // ──────────────────────────────────────────────
@@ -162,12 +164,12 @@ class ViewDispatch extends Page
     {
         return $this->record->purpose ?? '—';
     }
-    
+
     public function getPriorityLevel(): string
     {
         return $this->record->priority_level ?? '—';
     }
-    
+
     public function getPriorityLevelColor(): string
     {
         return match ($this->record->priority_level) {
@@ -177,22 +179,22 @@ class ViewDispatch extends Page
             default => 'gray',
         };
     }
-    
+
     public function getTicketNo(): string
     {
         return $this->record->ticket_no ?? '—';
     }
-    
+
     public function getRequestItem(): string
     {
         return $this->record->request_item ?? '—';
     }
-    
+
     public function getPassengerCount(): string
     {
         return $this->record->passenger_count ?? '—';
     }
-    
+
     public function getRequestingOffice(): string
     {
         return $this->record->requesting_office?->office_name ?? '—';
@@ -211,7 +213,7 @@ class ViewDispatch extends Page
     {
         return $this->record->driver?->contact_no ?? '—';
     }
-    
+
     public function getPersonnelNo(): string
     {
         return $this->record->driver?->personnel_no ?? '—';
@@ -236,12 +238,12 @@ class ViewDispatch extends Page
     {
         return $this->record->vehicle?->year ?? '—';
     }
-    
+
     public function getVehiclePowerType(): string
     {
         return $this->record->vehicle?->vehiclePowerType?->name ?? '—';
     }
-    
+
     public function getVehicleCategory(): string
     {
         return $this->record->vehicle?->vehicleCategory?->name ?? '—';

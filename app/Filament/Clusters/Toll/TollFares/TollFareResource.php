@@ -21,7 +21,7 @@ class TollFareResource extends Resource
     protected static ?string $model = TollFare::class;
 
     // protected static string | UnitEnum | null $navigationGroup = 'Fleet Management';
-    
+
     protected static ?string $cluster = TollCluster::class;
 
     protected static ?int $navigationSort = 3;

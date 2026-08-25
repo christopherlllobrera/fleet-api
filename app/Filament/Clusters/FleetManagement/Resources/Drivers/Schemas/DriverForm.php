@@ -2,12 +2,12 @@
 
 namespace App\Filament\Clusters\FleetManagement\Resources\Drivers\Schemas;
 
+use App\Models\Employee;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use App\Models\Employee;
 
 class DriverForm
 {

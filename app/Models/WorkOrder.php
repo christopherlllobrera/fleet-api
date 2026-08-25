@@ -21,33 +21,33 @@ class WorkOrder extends Model
         'contact_person_email',
         'contact_person_no',
     ];
+
     protected $cast = [
         'contracted_attachment' => 'array',
     ];
 
-    //Activity Logs
+    // Activity Logs
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
             ->useLogName('Work Order')
-            ->setDescriptionForEvent(fn(string $event) => "Work order has been {$event}")
+            ->setDescriptionForEvent(fn (string $event) => "Work order has been {$event}")
             ->logAll()
-            ->logOnlyDirty()
-            ;
+            ->logOnlyDirty();
     }
 
     public function preventive_work_order()
     {
         return $this->HasMany(PreventiveWorkOrder::class);
     }
-    
+
     public function employee()
     {
         return $this->belongsTo(Employee::class);
     }
-    
+
     public function getFullNameAttribute()
     {
-        return $this->employee ? trim($this->employee->first_name . ' ' . $this->employee->last_name) : 'No Name';
+        return $this->employee ? trim($this->employee->first_name.' '.$this->employee->last_name) : 'No Name';
     }
 }
