@@ -124,10 +124,10 @@
         @endif
 
         {{-- Map Container --}}
-        <div :id="containerId" class="relative rounded-lg border border-gray-300 dark:border-gray-700" style="overflow: clip;">
+        <div wire:ignore :id="containerId" class="relative rounded-lg border border-gray-300 dark:border-gray-700" style="overflow: clip;">
             <div
                 x-ref="map"
-                style="height: {{ $height }}px; width: 100%;"
+                style="min-height: 400px; height: {{ $height }}px; width: 100%; display: block; z-index: 1;"
                 class="bg-gray-100 dark:bg-gray-800"
             >
                 <div x-show="!isMapLoaded" style="display: flex; align-items: center; justify-content: center; height: 100%;">
@@ -238,6 +238,17 @@
                     init() {
                         this.loadExistingCoordinates();
                         this.loadLeaflet();
+                    },
+
+                    destroy() {
+                        this.resizeObserver?.disconnect();
+                        this.intersectionObserver?.disconnect();
+                        this.mutationObserver?.disconnect();
+                        this.themeObserver?.disconnect();
+                        if (this.map) {
+                            this.map.remove();
+                            this.map = null;
+                        }
                     },
 
                     loadExistingCoordinates() {
@@ -428,6 +439,17 @@
                         document.addEventListener('filament-wizard::step-changed', () => setTimeout(triggerInvalidate, 100));
                         document.addEventListener('tab-changed', () => setTimeout(triggerInvalidate, 100));
                         document.addEventListener('open-modal', () => setTimeout(triggerInvalidate, 100));
+
+                        // Livewire hook to trigger size invalidation after DOM updates
+                        document.addEventListener('livewire:initialized', () => {
+                            if (window.Livewire) {
+                                Livewire.hook('morph.updated', () => {
+                                    if (this.map) {
+                                        setTimeout(() => this.map.invalidateSize(), 100);
+                                    }
+                                });
+                            }
+                        });
                     },
 
                     initRadiusCircle() {
@@ -657,6 +679,33 @@
         .fi-fo-pinpoint .leaflet-top,
         .fi-fo-pinpoint .leaflet-bottom {
             z-index: 2 !important;
+        }
+
+        /* --- Leaflet CSS Isolation Overrides --- */
+        /* Prevent Tailwind / Filament global img { max-width: 100% } and filters from breaking tiles */
+        .fi-fo-pinpoint .leaflet-container img,
+        .fi-fo-pinpoint .leaflet-container .leaflet-tile,
+        .fi-fo-pinpoint .leaflet-container .leaflet-marker-icon,
+        .fi-fo-pinpoint .leaflet-container .leaflet-marker-shadow,
+        .fi-fo-pinpoint .leaflet-tile-container img {
+            max-width: none !important;
+            max-height: none !important;
+            width: auto;
+            padding: 0 !important;
+            margin: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+            filter: none !important;
+            vertical-align: baseline !important;
+        }
+
+        .fi-fo-pinpoint .leaflet-container {
+            box-sizing: border-box !important;
+        }
+
+        .fi-fo-pinpoint .leaflet-tile {
+            filter: inherit;
+            visibility: inherit;
         }
 
         /* Radius drag handle */

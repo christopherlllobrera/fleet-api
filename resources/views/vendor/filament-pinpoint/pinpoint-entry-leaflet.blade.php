@@ -101,6 +101,17 @@
                         this.loadLeaflet();
                     },
 
+                    destroy() {
+                        this.resizeObserver?.disconnect();
+                        this.intersectionObserver?.disconnect();
+                        this.mutationObserver?.disconnect();
+                        this.themeObserver?.disconnect();
+                        if (this.map) {
+                            this.map.remove();
+                            this.map = null;
+                        }
+                    },
+
                     loadLeaflet() {
                         if (window.L) {
                             this.$nextTick(() => this.initMap());
@@ -338,5 +349,31 @@
         .fi-in-pinpoint-entry .leaflet-control { z-index: 1 !important; }
         .fi-in-pinpoint-entry .leaflet-top,
         .fi-in-pinpoint-entry .leaflet-bottom  { z-index: 2 !important; }
+
+        /* --- Leaflet CSS Isolation Overrides --- */
+        .fi-in-pinpoint-entry .leaflet-container img,
+        .fi-in-pinpoint-entry .leaflet-container .leaflet-tile,
+        .fi-in-pinpoint-entry .leaflet-container .leaflet-marker-icon,
+        .fi-in-pinpoint-entry .leaflet-container .leaflet-marker-shadow,
+        .fi-in-pinpoint-entry .leaflet-tile-container img {
+            max-width: none !important;
+            max-height: none !important;
+            width: auto;
+            padding: 0 !important;
+            margin: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+            filter: none !important;
+            vertical-align: baseline !important;
+        }
+
+        .fi-in-pinpoint-entry .leaflet-container {
+            box-sizing: border-box !important;
+        }
+
+        .fi-in-pinpoint-entry .leaflet-tile {
+            filter: inherit;
+            visibility: inherit;
+        }
     </style>
 </x-dynamic-component>
