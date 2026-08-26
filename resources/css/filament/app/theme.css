@@ -12,7 +12,6 @@
 .leaflet-tile-container img {
     max-width: none !important;
     max-height: none !important;
-    width: auto;
     padding: 0 !important;
     margin: 0 !important;
     border: none !important;

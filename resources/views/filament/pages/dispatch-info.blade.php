@@ -345,6 +345,27 @@
     .toll-point-row:hover {
         background-color: #f3f4f6;
     }
+
+    /* Leaflet image CSS reset for Tailwind */
+    .leaflet-container img,
+    .leaflet-container .leaflet-tile,
+    .leaflet-container .leaflet-marker-icon,
+    .leaflet-container .leaflet-marker-shadow,
+    .leaflet-tile-container img {
+        max-width: none !important;
+        max-height: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        filter: none !important;
+        vertical-align: baseline !important;
+    }
+
+    /* Ensure the routing machine table doesn't get distorted */
+    .leaflet-routing-alt table img {
+        max-width: none !important;
+    }
 </style>
 @endpush
 
@@ -424,8 +445,8 @@
         let errorCount = 0;
 
         const tileUrl = darkMode 
-            ? "{{ config('filament-pinpoint.leaflet.tile_url_dark') ?: config('filament-pinpoint.leaflet.tile_url', 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png') }}"
-            : "{{ config('filament-pinpoint.leaflet.tile_url', 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png') }}";
+            ? "{{ config('filament-pinpoint.leaflet.tile_url_dark') ?: config('filament-pinpoint.leaflet.tile_url', 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png') }}"
+            : "{{ config('filament-pinpoint.leaflet.tile_url', 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png') }}";
         
         const attribution = "{!! addslashes(config('filament-pinpoint.leaflet.tile_attribution', '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors, &copy; <a href=\"https://carto.com/attributions\">CARTO</a>')) !!}";
 
@@ -433,7 +454,8 @@
             attribution: attribution,
             maxZoom: 19,
             subdomains: 'abcd',
-            detectRetina: true,
+            // Disable detectRetina to prevent 404s on providers that don't support it
+            detectRetina: false, 
         }).addTo(map);
 
         window.currentTileLayer.on('tileerror', function() {
