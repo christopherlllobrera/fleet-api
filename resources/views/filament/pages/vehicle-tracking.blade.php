@@ -35,11 +35,7 @@
                             _initialized = true;
                             const waitForInit = () => {
                                 if (typeof window.initFleetTracking === 'function') {
-                                    _destroy = window.initFleetTracking($el, '{{ route('fleet.live-positions') }}', {
-                                        tileUrl: {{ \Illuminate\Support\Js::from(config('filament-pinpoint.leaflet.tile_url')) }},
-                                        tileUrlDark: {{ \Illuminate\Support\Js::from(config('filament-pinpoint.leaflet.tile_url_dark')) }},
-                                        tileAttribution: {{ \Illuminate\Support\Js::from(config('filament-pinpoint.leaflet.tile_attribution')) }}
-                                    });
+                                    _destroy = window.initFleetTracking($el, '{{ route('fleet.live-positions') }}');
                                 } else {
                                     setTimeout(waitForInit, 100);
                                 }
@@ -58,7 +54,25 @@
         </div>
     </div>
 
+    @push('styles')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
     <style>
+        /* Prevent Tailwind CSS from distorting Leaflet tiles and markers */
+        .leaflet-container img,
+        .leaflet-container .leaflet-tile,
+        .leaflet-container .leaflet-marker-icon,
+        .leaflet-container .leaflet-marker-shadow,
+        .leaflet-tile-container img {
+            max-width: none !important;
+            max-height: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+            filter: none !important;
+            vertical-align: baseline !important;
+        }
+
         .vehicle-marker {
             width: 30px;
             height: 30px;
@@ -89,4 +103,5 @@
         .dark .leaflet-control-attribution { background: rgba(17, 24, 39, 0.8) !important; color: #9ca3af !important; }
         .dark .leaflet-control-attribution a { color: #9ca3af !important; }
     </style>
+    @endpush
 </x-filament-panels::page>

@@ -56,13 +56,13 @@ class SecurityHeaders
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.bunny.net https://unpkg.com https://cdnjs.cloudflare.com{$viteDev};",
 
             // Fetch / XHR / WebSocket: Livewire polling, Leaflet routing, tile prefetch, Vite HMR
-            "connect-src 'self' blob: https://nominatim.openstreetmap.org https://routing.openstreetmap.de https://unpkg.com https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com{$viteDev};",
+            "connect-src 'self' blob: https://nominatim.openstreetmap.org https://routing.openstreetmap.de https://unpkg.com https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://*.openstreetmap.org https://*.basemaps.cartocdn.com https://*.cartocdn.com https://*.carto.com{$viteDev};",
 
             // Fonts: Google, Bunny, data-URIs for inline icon fonts
             "font-src 'self' data: https://fonts.gstatic.com https://fonts.bunny.net;",
 
-            // Images: Leaflet markers from CDNs, map tiles, data-URIs, blobs for canvas export
-            "img-src 'self' data: blob: https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://cdnjs.cloudflare.com https://unpkg.com;",
+            // Images: Leaflet markers from CDNs, map tiles, data-URIs, blobs for canvas export, Filament avatars
+            "img-src 'self' data: blob: https://ui-avatars.com https://unavatar.io https://*.gravatar.com https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://*.openstreetmap.org https://*.basemaps.cartocdn.com https://*.cartocdn.com https://*.carto.com https://cdnjs.cloudflare.com https://unpkg.com;",
 
             // Web Workers: Filament / JS blobs
             "worker-src 'self' blob:;",
@@ -84,7 +84,7 @@ class SecurityHeaders
         // -----------------------------------------------------------------
         $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
         $response->headers->set('X-Content-Type-Options', 'nosniff');
-        $response->headers->set('Referrer-Policy', 'same-origin');
+        $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
         $response->headers->set('Permissions-Policy',
             'geolocation=(self), camera=(), microphone=(), fullscreen=(self), payment=()',
         );

@@ -2,11 +2,11 @@
 
 namespace App\Filament\Resources\Dispatches\Schemas;
 
+use App\Filament\Forms\Components\LocationPicker;
 use App\Models\Dispatch;
 use App\Models\Driver;
 use App\Models\RequestingOffice;
 use App\Models\Vehicle;
-use Fahiem\FilamentPinpoint\Pinpoint;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Radio;
@@ -42,8 +42,7 @@ class DispatchForm
                                 ->icon('heroicon-o-map-pin')
                                 ->description('Set the pickup and drop-off points for your trip. Accurate locations help ensure smooth dispatching.')
                                 ->schema([
-                                    Pinpoint::make('from_map')
-                                        ->provider('leaflet')
+                                    LocationPicker::make('from_map')
                                         ->label('From Location')
                                         ->latField('from_lat')
                                         ->lngField('from_lng')
@@ -53,8 +52,7 @@ class DispatchForm
                                         ->draggable()
                                         ->searchable()
                                         ->defaultLocation(14.58989669180146, 121.06391716565099),
-                                    Pinpoint::make('to_map')
-                                        ->provider('leaflet')
+                                    LocationPicker::make('to_map')
                                         ->label('To Location')
                                         ->latField('to_lat')
                                         ->lngField('to_lng')
@@ -345,8 +343,7 @@ class DispatchForm
                                                 ->numeric()
                                                 ->minLength(10)
                                                 ->maxLength(10),
-                                            Pinpoint::make('pick_up_map')
-                                                ->provider('leaflet')
+                                            LocationPicker::make('pick_up_map')
                                                 ->label('Pick Up Location')
                                                 ->latField('pick_up_lat')
                                                 ->lngField('pick_up_lng')
