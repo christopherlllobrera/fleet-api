@@ -1,8 +1,6 @@
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-window.L = L;
-
 const POLL_MS = 8_000;
 const LIGHT_TILE = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
 const DARK_TILE = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';

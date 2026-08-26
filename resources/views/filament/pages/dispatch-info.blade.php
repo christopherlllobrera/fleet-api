@@ -324,6 +324,12 @@
         color: #e5e7eb !important;
     }
 
+    /* SVG Pin Marker Styles */
+    .custom-pin-marker {
+        background: transparent !important;
+        border: none !important;
+    }
+
     /* Toll Point Marker Styles */
     .toll-marker {
         background-color: #3b82f6;
@@ -423,12 +429,10 @@
     }
 
     /**
-     * Detect dark mode
+     * Detect dark mode (strictly follows Filament's dark mode toggle on <html>)
      */
     function isDarkMode() {
-        return document.documentElement.classList.contains('dark') ||
-               document.body.classList.contains('dark-mode') ||
-               (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        return document.documentElement.classList.contains('dark');
     }
 
     /**
@@ -445,10 +449,10 @@
         let errorCount = 0;
 
         const tileUrl = darkMode 
-            ? "{{ config('filament-pinpoint.leaflet.tile_url_dark') ?: config('filament-pinpoint.leaflet.tile_url', 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png') }}"
-            : "{{ config('filament-pinpoint.leaflet.tile_url', 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png') }}";
+            ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
+            : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png';
         
-        const attribution = "{!! addslashes(config('filament-pinpoint.leaflet.tile_attribution', '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors, &copy; <a href=\"https://carto.com/attributions\">CARTO</a>')) !!}";
+        const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attributions">CARTO</a>';
 
         window.currentTileLayer = L.tileLayer(tileUrl, {
             attribution: attribution,
@@ -490,13 +494,6 @@
             attributes: true,
             attributeFilter: ['class']
         });
-
-        if (window.matchMedia) {
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-                console.log('System theme changed, updating map tiles');
-                applyTileLayer(map);
-            });
-        }
     }
 
     // Livewire-specific event listeners
@@ -630,24 +627,35 @@
                     }
                 });
 
-                // Custom icons for start and end points
-                const startIcon = L.icon({
-                    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-                    iconSize: [25, 41],
-                    iconAnchor: [12, 41],
-                    popupAnchor: [1, -34],
-                    shadowSize: [41, 41]
-                });
+                // Self-contained custom SVG pin markers (matches location-picker implementation, zero network latency/failures)
+                function createSvgPin(color) {
+                    const shadowId = 'pin-shadow-' + color.replace(/[^a-zA-Z0-9]/g, '');
+                    return `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 42" width="32" height="42">
+                            <defs>
+                                <filter id="${shadowId}" x="-20%" y="-10%" width="140%" height="140%">
+                                    <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.3"/>
+                                </filter>
+                            </defs>
+                            <path d="M16 0C7.16 0 0 7.16 0 16c0 10.8 14.4 24.6 15 25.2.3.3.7.5 1 .5s.7-.2 1-.5C17.6 40.6 32 26.8 32 16 32 7.16 24.84 0 16 0z" fill="${color}" filter="url(#${shadowId})"/>
+                            <circle cx="16" cy="16" r="6.5" fill="#ffffff"/>
+                            <circle cx="16" cy="16" r="3.5" fill="${color}"/>
+                        </svg>
+                    `;
+                }
 
-                const endIcon = L.icon({
-                    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-                    iconSize: [25, 41],
-                    iconAnchor: [12, 41],
-                    popupAnchor: [1, -34],
-                    shadowSize: [41, 41]
-                });
+                function createPinIcon(color) {
+                    return L.divIcon({
+                        className: 'custom-pin-marker',
+                        html: createSvgPin(color),
+                        iconSize: [32, 42],
+                        iconAnchor: [16, 42],
+                        popupAnchor: [0, -42],
+                    });
+                }
+
+                const startIcon = createPinIcon('#16a34a'); // Green for Departure
+                const endIcon = createPinIcon('#dc2626');   // Red for Destination
 
                 // Custom toll gate icon
                 function createTollIcon(price) {
