@@ -26,8 +26,8 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
-use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
+
+use App\Filament\Pages\MyProfile;
 
 class FleetPanelProvider extends PanelProvider
 {
@@ -46,7 +46,7 @@ class FleetPanelProvider extends PanelProvider
             ->id('fleet')
             ->path('fleet')
             ->login()
-            ->profile()
+            
             ->passwordReset()
             ->registration()
             ->registrationRouteSlug('register')
@@ -116,29 +116,11 @@ class FleetPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->viteTheme('resources/css/filament/app/theme.css')
-            ->plugins([
-                FilamentEditProfilePlugin::make()
-                    ->slug('my-profile')
-                    ->setTitle('My Profile')
-                    ->setNavigationLabel('My Profile')
-                    ->setNavigationGroup('Group Profile')
-                    ->setIcon('heroicon-o-user')
-                    ->setSort(10)
-                    // ->canAccess(fn () => auth()->user()->id === 1)
-                    ->shouldRegisterNavigation(false)
-                    ->shouldShowEmailForm()
-                    ->shouldShowAvatarForm()
-                    ->shouldShowMultiFactorAuthentication(),
-            ])
             ->userMenuItems([
                 'profile' => Action::make('profile')
                     ->label('Profile')
-                    ->url(fn (): string => EditProfilePage::getUrl())
-                    ->icon('heroicon-m-user-circle'),
-                // If you are using tenancy need to check with the visible method where ->company() is the relation between the user and tenancy model as you called
-                // ->visible(function (): bool {
-                //     return auth()->user()->company()->exists();
-                // }),
+                    ->url(fn (): string => MyProfile::getUrl())
+                    ->icon('heroicon-m-user'),
             ]);
     }
 }

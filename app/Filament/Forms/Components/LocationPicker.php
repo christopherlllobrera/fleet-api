@@ -52,9 +52,9 @@ class LocationPicker extends Field
 
     protected bool|Closure $searchable = true;
 
-    protected string|Closure|null $tileUrl = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png';
+    protected string|Closure|null $tileUrl = null;
 
-    protected string|Closure|null $tileUrlDark = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png';
+    protected string|Closure|null $tileUrlDark = null;
 
     protected string|Closure|null $tileAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attributions">CARTO</a>';
 
@@ -366,14 +366,14 @@ class LocationPicker extends Field
         return (bool) $this->evaluate($this->searchable);
     }
 
-    public function getTileUrl(): string
+    public function getTileUrl(): ?string
     {
-        return $this->evaluate($this->tileUrl) ?? 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png';
+        return $this->evaluate($this->tileUrl);
     }
 
     public function getTileUrlDark(): ?string
     {
-        return $this->evaluate($this->tileUrlDark) ?? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png';
+        return $this->evaluate($this->tileUrlDark);
     }
 
     public function getTileAttribution(): string

@@ -449,8 +449,8 @@
         let errorCount = 0;
 
         const tileUrl = darkMode 
-            ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
-            : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png';
+            ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png{{ env("VITE_CARTO_API_KEY") ? "?key=" . env("VITE_CARTO_API_KEY") . "&v=" . time() : "?v=" . time() }}'
+            : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png{{ env("VITE_CARTO_API_KEY") ? "?key=" . env("VITE_CARTO_API_KEY") . "&v=" . time() : "?v=" . time() }}';
         
         const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attributions">CARTO</a>';
 

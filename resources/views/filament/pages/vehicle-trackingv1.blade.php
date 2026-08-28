@@ -70,8 +70,9 @@
     <script>
         const FLEET_ENDPOINT = '{{ route('fleet.live-positions') }}';
         const POLL_MS = 8000;
-        const LIGHT_TILE = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
-        const DARK_TILE = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+        const cartoKey = '{{ env("VITE_CARTO_API_KEY") ? "?key=" . env("VITE_CARTO_API_KEY") . "&v=" . time() : "?v=" . time() }}';
+        const LIGHT_TILE = `https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png${cartoKey}`;
+        const DARK_TILE = `https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png${cartoKey}`;
 
         function isDark() {
             return document.documentElement.classList.contains('dark');

@@ -40,7 +40,7 @@
     "src": "node_modules/leaflet/dist/images/marker-icon.png"
   },
   "resources/css/app.css": {
-    "file": "assets/app-BV7Tqjon.css",
+    "file": "assets/app-8-QKz3UC.css",
     "name": "app",
     "names": [
       "app.css"
@@ -64,7 +64,7 @@
     "isEntry": true
   },
   "resources/js/fleet-tracking.js": {
-    "file": "assets/fleet-tracking-BHDLCKyx.js",
+    "file": "assets/fleet-tracking-BzAUgmHO.js",
     "name": "fleet-tracking",
     "src": "resources/js/fleet-tracking.js",
     "isEntry": true,

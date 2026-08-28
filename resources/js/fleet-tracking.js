@@ -2,8 +2,9 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 const POLL_MS = 8_000;
-const LIGHT_TILE = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
-const DARK_TILE = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+const cartoKey = import.meta.env.VITE_CARTO_API_KEY ? `?key=${import.meta.env.VITE_CARTO_API_KEY}&v=124` : '?v=124';
+const LIGHT_TILE = `https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png${cartoKey}`;
+const DARK_TILE = `https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png${cartoKey}`;
 const TILE_ATTRIBUTION = '&copy; OpenStreetMap &copy; CARTO';
 
 function isDark( ) {

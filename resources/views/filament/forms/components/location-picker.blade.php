@@ -350,8 +350,9 @@
 
                     getTileUrl() {
                         // REMOVED {r} to prevent 404 tile errors
-                        const defaultLight = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png';
-                        const defaultDark = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png';
+                        const cartoKey = '{{ env("VITE_CARTO_API_KEY") ? "?key=" . env("VITE_CARTO_API_KEY") . "&v=" . time() : "?v=" . time() }}';
+                        const defaultLight = `https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png${cartoKey}`;
+                        const defaultDark = `https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png${cartoKey}`;
 
                         if (this.isDarkMode()) {
                             return (this.tileUrlDark ? this.tileUrlDark.replace('{r}', '') : defaultDark);
